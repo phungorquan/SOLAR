@@ -2,16 +2,18 @@
 #include <ESP8266HTTPClient.h>
 #include <Ticker.h>
 
-const char* ssid = "UIT Public";
-const char* password = "";
+const char* ssid = "UIT Public";//"Baby I'm unreal";
+const char* password = "";//"417417417";
 
 String ID_Solar = "CEEC-Solar";
 String Pass_Solar = "ce.uit.edu.vn";
 
+const char* Host_Send_Data = "http://lee-ceec.000webhostapp.com/solar/Process_Data/Receive_From_Esp.php";
+
 /*
  * This ticker will jump into Enable_Send_Collected and enable Flag ready to send collected data 1time/1minute
 */
-#define TIME_SEND_COLLECTED 60 //60s
+#define TIME_SEND_COLLECTED 600 //10 minutes
 Ticker Ticker_Send_Collected;
 bool Send_Collected_Flag=false;
 void Enable_Send_Collected(void);
@@ -33,7 +35,8 @@ void Send_Current_Data(void);
     {
         "Voltage":  ,
         "Intensity":  ,
-        "Status":
+        "Wat":  ,
+        "Status_Connect":
     },
     "User":
     {
@@ -118,7 +121,7 @@ void Encode_Json_Collected(float Field1, float Field2, float Field3, String ID, 
 void Send_Collected_Data(void) {
   Encode_Json_Collected((float)random(501),(float)random(501),(float)random(501),ID_Solar,Pass_Solar);
   HTTPClient http;
-  http.begin("http://lee-ceec.000webhostapp.com/solar/Receive_From_Esp.php");
+  http.begin(Host_Send_Data);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   int httpCode=http.POST(String("Collected=")+Collected_Send_Data);
   String payload=http.getString();
@@ -142,6 +145,9 @@ void Encode_Json_Current(float Voltage, float Intensity, float Wat, bool Status_
   Current_Send_Data+=String("\"Intensity\":");
   Current_Send_Data+=Intensity;
   Current_Send_Data+=String(",");
+  Current_Send_Data+=String("\"Wat\":");
+  Current_Send_Data+=Wat;
+  Current_Send_Data+=String(",");
   Current_Send_Data+=String("\"Status_Connect\":");
   Current_Send_Data+=Status_Connect;
   Current_Send_Data+=String("},");
@@ -163,7 +169,7 @@ void Encode_Json_Current(float Voltage, float Intensity, float Wat, bool Status_
 void Send_Current_Data(void) {
   Encode_Json_Current((float)random(501),(float)random(50),(float)random(5000),1,ID_Solar,Pass_Solar);
   HTTPClient http;
-  http.begin("http://lee-ceec.000webhostapp.com/solar/Receive_From_Esp.php");
+  http.begin(Host_Send_Data);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   int httpCode=http.POST(String("Current=")+Current_Send_Data);
   String payload=http.getString();
