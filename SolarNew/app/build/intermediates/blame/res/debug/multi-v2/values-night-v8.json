@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\TEMPP\\SOLAR\\SolarNew\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "outputFile": "E:\\1DATA\\New folder\\TEMPP\\SOLAR\\SolarNew\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Xiu\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0.aar\\9cc4b4365c21733c82aece0c6bccabb1\\res\\values-night-v8\\values-night-v8.xml",
+                    "source": "C:\\Users\\16520\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0.aar\\9ee38294ed804233365b44674fe40730\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8",
                         "startColumns": "4,4,4,4,4,4,4",
