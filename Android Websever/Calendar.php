@@ -5,6 +5,7 @@ $password 	= "";
 $DB 		= "id7269981_solar";
 
 $ID = $_POST["Getid"];
+$Date = $_POST["DATE"];
 		
 		class SV 
 	{
@@ -24,8 +25,7 @@ $ID = $_POST["Getid"];
 	mysqli_query($connect,"SET NAMES 'utf8'");
 	
 	//#$query = "SELECT Max(Field1),Max(Field2),Max(Field3) from collecteddata where (SELECT Max(DateGet) from collecteddata where ID = '$ID')";
-	$query = "SELECT Max(Field1),Max(Field2),Max(Field3) from collecteddata where (SELECT (ID = '$ID') AND (MAX(DateGet)))"; // Get max today
-	
+	$query = "SELECT Max(Field1),Max(Field2),Max(Field3) from collecteddata where (SELECT (ID = '$ID') AND DateGet = '$Date')";
 	$data = mysqli_query($connect,$query);
 	
 	while($row = mysqli_fetch_assoc($data))

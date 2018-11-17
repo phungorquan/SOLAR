@@ -33,13 +33,14 @@ public class MainActivity extends AppCompatActivity{
     TextView tvLog,tvReg;
     EditText edtID,edtPASS;
 
-    String urlpostdata = "http://192.168.1.7:1234/SOLAR/Log.php";
+    String urlpostdata = "http://192.168.1.3:1234/SOLAR/Log.php";//"http://192.168.1.7:1234/SOLAR/Log.php";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final Global g = (Global)getApplication();
         edtID = (EditText) findViewById(R.id.edtID);
         edtPASS = (EditText)findViewById(R.id.edtPASS);
 
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity{
 
         tvLog.setText("LOGIN");
         tvReg.setText("REGISTER");
+
+
 
         // Check for the fist time when open the application
         final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 String id = edtID.getText().toString().trim();      // Get id from edtID
                 String pass = edtPASS.getText().toString().trim();  // Get id from edtPASS
+                g.setData(id);
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isConnected()) {
 
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
                         Toast.makeText(MainActivity.this, "Nhập đủ đi", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        Login(urlpostdata); // Call Login function and parameter is link
+                       Login(urlpostdata); // Call Login function and parameter is link
                     }
                 }
                 else {
@@ -117,10 +121,15 @@ public class MainActivity extends AppCompatActivity{
                         else if(response.trim().equals("2"))
                         {
                             // If request to server and server response 2 => Đăng nhập thành công => Move to Show Data activity
-                            //Toast.makeText(MainActivity.this,"ACCESSED", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this,"ACCESSED", Toast.LENGTH_SHORT).show();
                             //Intent intent = new Intent(MainActivity.this,Showdata.class);
                             Intent intent = new Intent(MainActivity.this,Showdata.class);
                             startActivity(intent);
+                        }
+
+                        else if(response.trim().equals("-1"))
+                        {
+                            Toast.makeText(MainActivity.this,"Server is busy, try again!!!", Toast.LENGTH_SHORT).show();
                         }
 
                     }

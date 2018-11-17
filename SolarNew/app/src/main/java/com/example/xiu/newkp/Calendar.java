@@ -38,7 +38,8 @@ public class Calendar extends AppCompatActivity {
         getSupportActionBar().setTitle("History");
 
 
-        final String urlgetdata = "http://192.168.1.7:1234/SOLAR/Testrecandsendcal.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
+
+        final String urlgetdata = "http://192.168.1.3:1234/SOLAR/Calendar.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
         calendar = (CalendarView) findViewById(R.id.cld);
         txv1 = (TextView) findViewById(R.id.txvF1);
         txv2 = (TextView) findViewById(R.id.txvF2);
@@ -47,20 +48,27 @@ public class Calendar extends AppCompatActivity {
         txv22 = (TextView) findViewById(R.id.txvAF2);
         txv33 = (TextView) findViewById(R.id.txvAF3);
 
+        final Global g = (Global)getApplication();
+       // final Bundle bd = getIntent().getExtras();
+       /// final String[] Getaccount = {null};
+
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 //String data = (dayOfMonth)+ "/" + (month) + "/" + (year);
-                String data = (year)+"-"+(month + 1)+"-"+(dayOfMonth);
-
-                PostDate(urlgetdata,data);
+                String date = (year)+"-"+(month + 1)+"-"+(dayOfMonth);
+               // if(bd != null)
+               // {
+              //      Getaccount[0] = bd.getString("Getaccount");
+              //  }
+                PostDate(urlgetdata,date,g.getData());
             }
         });
 
     }
 
 
-    public void PostDate (final String url, final String date)
+    public void PostDate (final String url, final String date, final String Getaccount)
     {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -72,13 +80,23 @@ public class Calendar extends AppCompatActivity {
                             JSONArray jsonArray = new JSONArray(response);
                                 try{
                                     JSONObject object = jsonArray.getJSONObject(0);
-                                    final String f1 = object.getString("Field1");
-                                    final String f2 = object.getString("Field2");
-                                    final String f3 = object.getString("Field3");
+                                    final String f1 = object.getString("F1");
+                                    final String f2 = object.getString("F2");
+                                    final String f3 = object.getString("F3");
 
-                                    txv1.setText(f1);
-                                    txv2.setText(f2);
-                                    txv3.setText(f3);
+                                    if(f1 == "null" && f2 == "null" && f3 == "null")
+                                    {
+
+                                        txv1.setText("Nodata");
+                                        txv2.setText("Nodata");
+                                        txv3.setText("Nodata");
+                                    }
+                                    else if(f1 != "null" && f2 != "null" && f3 != "null")
+                                    {
+                                        txv1.setText(f1);
+                                        txv2.setText(f2);
+                                        txv3.setText(f3);
+                                    }
                                 }
                                 catch (JSONException e) {
                                     e.printStackTrace();
@@ -105,6 +123,7 @@ public class Calendar extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("DATE",date.trim());
+                params.put("Getid",Getaccount.trim());
                 return params;
             }
         };

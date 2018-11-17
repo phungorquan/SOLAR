@@ -6,8 +6,8 @@ $username 	= "root";
 $password 	= "";
 $DB 		= "id7269981_solar";
 
-$ID = $_POST["id"];
-$PASS = $_POST["pass"];
+$ID = $_POST["ID"];
+$PASS = $_POST["PASS"];
 $flag = 0;
 	$conn = new mysqli($server, $username, $password,$DB);
 	if ($conn->connect_error) 
@@ -36,7 +36,7 @@ $flag = 0;
 		$insert = "INSERT INTO users(ID,PASS) VALUES ('$ID','$PASS')";
 		if ($conn->query($insert) === TRUE)
 		{
-			echo "Can acces"."<br>";
+			echo "2" ;//"Can acces"."<br>";
 		}
 		else echo "-1"; // server is busy
 	}

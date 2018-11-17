@@ -27,7 +27,7 @@ import java.util.Map;
 public class RegisterAccount extends AppCompatActivity {
     TextView tvReg;
     EditText edtID,edtPASS,edtPASSCON;
-    String urlpostdata = "http://192.168.1.7:1234/SOLAR/Reg.php";
+    String urlpostdata = "http://192.168.1.3:1234/SOLAR/Reg.php";//"http://192.168.1.7:1234/SOLAR/Reg.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class RegisterAccount extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if(response.trim().equals("0")) {
+                        if(response.trim().equals("2")) {
                             Toast.makeText(RegisterAccount.this, "Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterAccount.this,MainActivity.class);
                             startActivity(intent);
@@ -94,6 +94,11 @@ public class RegisterAccount extends AppCompatActivity {
                         {
                             Toast.makeText(RegisterAccount.this,"Account is exist", Toast.LENGTH_SHORT).show();
                             //Log.d("AAA","ERROR\n" + response.toString());
+                        }
+
+                        else if(response.trim().equals("-1"))
+                        {
+                            Toast.makeText(RegisterAccount.this,"Server is busy, try again!!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },

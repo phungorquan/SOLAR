@@ -6,14 +6,14 @@ $username 	= "root";
 $password 	= "";
 $DB 		= "id7269981_solar";
 
-$ID = $_POST["id"];
-$PASS = $_POST["pass"];
+$ID = $_POST["ID"];
+$PASS = $_POST["PASS"];
 $flag = 0;
 	$conn = new mysqli($server, $username, $password,$DB);
 	if ($conn->connect_error) 
 	{
 		#die("Connection failed: " . $conn->connect_error);
-		echo "-1"; // Server is busy
+		echo "-1"; # Server is busy
 	} 
 	mysqli_query($conn,"SET NAMES 'utf8'");
 	
@@ -26,12 +26,12 @@ $flag = 0;
 			{
 				if($row["Pass"] == $PASS)
 				{
-					$flag = 1;
-					echo $flag."<br>";
+					$flag = 2;
+					echo $flag;
 					break;
 				}
 				else 
-				{$flag = 2;}
+				{$flag = 1;}
 				
 			}
 			
@@ -39,13 +39,12 @@ $flag = 0;
 	
 	if($flag == 0)
 	{
-		
-		echo "NOT EXIST ACCOUNT"."<br>";
+		echo "0";//"NOT EXIST ACCOUNT";
 	}
 
-	else if($flag == 2)
+	else if($flag == 1)
 	{
-		echo "PASS ERR"."<br>";
+		echo "1";//"PASS ERR"."<br>";
 	}
 	
 
