@@ -17,7 +17,7 @@ $flag = 0;
 	} 
 	mysqli_query($conn,"SET NAMES 'utf8'");
 	
-	$query ="SELECT * from users";
+	$query ="SELECT * from user";
 	$result = $conn->query($query);
 	
 		while($row = $result->fetch_assoc()) 

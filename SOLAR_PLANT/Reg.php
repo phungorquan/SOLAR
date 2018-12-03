@@ -34,9 +34,7 @@ $flag = 0;
 	
 	if($flag == 0)
 	{
-		
-		
-		
+	
 	$findcode ="SELECT Max(Code) from user";
 	$result = $conn->query($findcode);
 	while($row = $result->fetch_assoc()) 
