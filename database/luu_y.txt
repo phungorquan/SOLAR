@@ -1,0 +1,8 @@
+NodeID <UserID><so thu tu node>
+vd 
+UserID: ceec
+NodeID: ceec_0
+NodeName: toa B
+...
+
+NodeNum trong Users chinh la so luong Node ma user do co
