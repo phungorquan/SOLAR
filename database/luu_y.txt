@@ -1,4 +1,4 @@
-NodeID <UserID><so thu tu node>
+NodeID <UserID>_<so thu tu node>
 vd 
 UserID: ceec
 NodeID: ceec_0
