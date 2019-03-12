@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Solar</title>
+</head>
+<body>
+
+	<div id="loginForm">
+		<input type="text" id="txtUsername" />
+		<input type="password" id="txtPassword" />
+		<input type="button" id="btnLogin" value="Login">
+	</div>
+
+	<div id="nodesForm">
+		<div id="selectNodeForm"></div>
+		<input type="button" id="btnSelectNode" value="Select">
+	</div>
+
+	<div id="dataForm">
+		<p>Current data today</p>
+		<div id="currentDataToday">
+			<p id="TimeGet"></p>
+			<p id="PV_Vol"></p>
+			<p id="PV_Amp"></p>
+			<p id="Bus"></p>
+			<p id="AC_Vol"></p>
+			<p id="AC_Hz"></p>
+			<p id="Tem"></p>
+			<p id="Pac"></p>
+			<p id="EToday"></p>
+			<p id="EAll"></p>
+			<p id="StatusConnect"></p>
+		</div>
+
+		<p>Collected data today</p>
+		<div id="collectedDataToday"></div>
+
+		<p>Collected data specific day</p>
+		<div id="collectedDataSpecDay">
+			<input type="button" id="btnUpdateSpecDayChart" value="Update">
+			<input type="button" id="btnSpecDayChart" value="Show">
+			<div id="selectDay"></div>
+			<div id="specDayChart"></div>
+		</div>
+
+		<p>Collected data every day</p>
+		<div id="collectedDataEveryDay">
+			<input type="button" id="btnUpdateEveryDayChart" value="Update">
+			<input type="button" id="btnEveryDayChart" value="Show">
+			<div id="selectMonth"></div>
+			<div id="everyDayChart"></div>
+		</div>
+
+		<p>Collected data every month</p>
+		<div id="collectedDataEveryMonth">
+			<input type="button" id="btnUpdateEveryDayChart" value="Update">
+			<input type="button" id="btnEveryDayChart" value="Show">
+			<div id="selectYear"></div>
+			<div id="everyMonthChart"></div>
+		</div>
+
+		<p>Collected data every year</p>
+		<input type="button" id="btnUpdateEveryDayChart" value="Update">
+		<div id="collectedDataEveryYear"></div>
+	</div>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="xuly.js"></script>
+</body>
+</html>

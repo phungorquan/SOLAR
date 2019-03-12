@@ -1,6 +1,6 @@
 create table Users (
 	ID char(30) primary key,
-	Pass char(30) not null,
+	Pass varbinary(50) not null,
 	NumNode smallint not null
 );
 create table Nodes (
@@ -11,7 +11,7 @@ create table Nodes (
 );
 create table CurrentData (
 	ID char(30) not null,
-	TimeGet datatime,
+	TimeGet datetime,
 	PV_Vol float,
 	PV_Amp float,
 	Bus float,
@@ -30,7 +30,7 @@ create table CurrentData (
 create table CollectedData (
 	IndexData int(11) not null,
 	ID char(30) not null,
-	TimeGet datatime,
+	TimeGet datetime,
 	PV_Vol float,
 	PV_Amp float,
 	Bus float,
@@ -40,3 +40,7 @@ create table CollectedData (
 	CONSTRAINT FK_Collected_Nodes FOREIGN KEY (NodeID) REFERENCES Nodes (NodeID),
 	CONSTRAINT FK_Collected_Users FOREIGN KEY (ID) REFERENCES Users (ID)
 );
+
+#SET SQL_SAFE_UPDATES = 0;
+#insert into Users (ID, Pass, NumNode) values (upper('ceec'), AES_ENCRYPT('ce.uit.edu.vn', 'qwerty123456'), 1);
+#select * from users where ID=upper('ceec') and Pass=AES_ENCRYPT('ce.uit.edu.vn', 'qwerty123456');

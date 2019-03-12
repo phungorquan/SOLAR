@@ -1,0 +1,25 @@
+{
+  "name": "passport_socketio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lê",
+  "license": "ISC",
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "body-parser": "^1.18.3",
+    "connect-mysql": "^2.2.5",
+    "cookie-parser": "^1.4.4",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mysql": "^2.16.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport.socketio": "^3.7.0",
+    "socket.io": "^2.2.0"
+  }
+}
