@@ -7,6 +7,144 @@ var dataChartCurrent={labels:[], dataContent:[]},
 var chartCurrent, chartEveryDay, chartEveryMonth, chartEveryYear;
 
 userChart = {
+  resetChartCurrent: function () {
+    while (chartCurrent.data.labels.length) {
+      chartCurrent.data.labels.pop();
+      chartCurrent.data.datasets[0].data.pop();
+    }
+    chartCurrent.update();
+  },
+  resetChartEveryDay: function() {
+    while (chartEveryDay.data.labels.length) {
+      chartEveryDay.data.labels.pop();
+      chartEveryDay.data.datasets[0].data.pop();
+    }
+    chartEveryDay.update();
+  },
+  resetChartEveryMonth: function() {
+    while (chartEveryMonth.data.labels.length) {
+      chartEveryMonth.data.labels.pop();
+      chartEveryMonth.data.datasets[0].data.pop();
+    }
+    chartEveryMonth.update();
+  },
+  resetChartEveryYear: function() {
+    while (chartEveryYear.data.labels.length) {
+      chartEveryYear.data.labels.pop();
+      chartEveryYear.data.datasets[0].data.pop();
+    }
+    chartEveryYear.update();
+  },
+  resetAllChart: function() {
+    while (chartCurrent.data.labels.length) {
+      chartCurrent.data.labels.pop();
+      chartCurrent.data.datasets[0].data.pop();
+    }
+    chartCurrent.update();
+
+    while (chartEveryDay.data.labels.length) {
+      chartEveryDay.data.labels.pop();
+      chartEveryDay.data.datasets[0].data.pop();
+    }
+    chartEveryDay.update();
+
+    while (chartEveryMonth.data.labels.length) {
+      chartEveryMonth.data.labels.pop();
+      chartEveryMonth.data.datasets[0].data.pop();
+    }
+    chartEveryMonth.update();
+
+    while (chartEveryYear.data.labels.length) {
+      chartEveryYear.data.labels.pop();
+      chartEveryYear.data.datasets[0].data.pop();
+    }
+    chartEveryYear.update();
+  },
+  updateChartCurrent: function () {
+    while (chartCurrent.data.labels.length) {
+      chartCurrent.data.labels.pop();
+      chartCurrent.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartCurrent.labels.length; i++) {
+      chartCurrent.data.labels.push(dataChartCurrent.labels[i]);
+      chartCurrent.data.datasets[0].data.push(dataChartCurrent.dataContent[i]);
+    }
+    chartCurrent.update();
+  },
+  updateChartEveryDay: function () {
+    while (chartEveryDay.data.labels.length) {
+      chartEveryDay.data.labels.pop();
+      chartEveryDay.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryDay.labels.length; i++) {
+      chartEveryDay.data.labels.push(dataChartEveryDay.labels[i]);
+      chartEveryDay.data.datasets[0].data.push(dataChartEveryDay.dataContent[i]);
+    }
+    chartEveryDay.update();
+  },
+  updateChartEveryMonth: function () {
+    while (chartEveryMonth.data.labels.length) {
+      chartEveryMonth.data.labels.pop();
+      chartEveryMonth.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryMonth.labels.length; i++) {
+      chartEveryMonth.data.labels.push(dataChartEveryMonth.labels[i]);
+      chartEveryMonth.data.datasets[0].data.push(dataChartEveryMonth.dataContent[i]);
+    }
+    chartEveryMonth.update();
+  },
+  updateChartEveryYear: function () {
+    while (chartEveryYear.data.labels.length) {
+      chartEveryYear.data.labels.pop();
+      chartEveryYear.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryYear.labels.length; i++) {
+      chartEveryYear.data.labels.push(dataChartEveryYear.labels[i]);
+      chartEveryYear.data.datasets[0].data.push(dataChartEveryYear.dataContent[i]);
+    }
+    chartEveryYear.update();
+  },
+  updateAllChart: function () {
+    while (chartCurrent.data.labels.length) {
+      chartCurrent.data.labels.pop();
+      chartCurrent.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartCurrent.labels.length; i++) {
+      chartCurrent.data.labels.push(dataChartCurrent.labels[i]);
+      chartCurrent.data.datasets[0].data.push(dataChartCurrent.dataContent[i]);
+    }
+    chartCurrent.update();
+
+    while (chartEveryDay.data.labels.length) {
+      chartEveryDay.data.labels.pop();
+      chartEveryDay.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryDay.labels.length; i++) {
+      chartEveryDay.data.labels.push(dataChartEveryDay.labels[i]);
+      chartEveryDay.data.datasets[0].data.push(dataChartEveryDay.dataContent[i]);
+    }
+    chartEveryDay.update();
+
+    while (chartEveryMonth.data.labels.length) {
+      chartEveryMonth.data.labels.pop();
+      chartEveryMonth.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryMonth.labels.length; i++) {
+      chartEveryMonth.data.labels.push(dataChartEveryMonth.labels[i]);
+      chartEveryMonth.data.datasets[0].data.push(dataChartEveryMonth.dataContent[i]);
+    }
+    chartEveryMonth.update();
+
+    while (chartEveryYear.data.labels.length) {
+      chartEveryYear.data.labels.pop();
+      chartEveryYear.data.datasets[0].data.pop();
+    }
+    for (let i=0; i<dataChartEveryYear.labels.length; i++) {
+      chartEveryYear.data.labels.push(dataChartEveryYear.labels[i]);
+      chartEveryYear.data.datasets[0].data.push(dataChartEveryYear.dataContent[i]);
+    }
+    chartEveryYear.update();
+  },
   addChartEveryDay: function  (data) {
     chartEveryDay.data.labels.push(data.TimeGet);
     chartEveryDay.data.datasets.forEach((dataset) => {
@@ -129,7 +267,7 @@ userChart = {
     gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
     gradientFill.addColorStop(1, "rgba(255, 255, 255, 0.24)");
 
-    var chartCurrent = new Chart(ctx, {
+    chartCurrent = new Chart(ctx, {
       type: 'line',
       data: {
         labels: dataChartCurrent.labels,
@@ -351,15 +489,27 @@ userChart = {
         }
       }
     };
-    var chartEveryYear = new Chart(e, a);
+    chartEveryYear = new Chart(e, a);
   }
 };
 
-function pre_processChartData (chartData) {
-  dataChartCurrent={labels:[], dataContent:[]},
-  dataChartEveryDay={labels:[], dataContent:[]},
-  dataChartEveryMonth={labels:[], dataContent:[]},
-  dataChartEveryYear={labels:[], dataContent:[]};
+function pre_processChartData (chartData, resetCurrent, resetEveryDay, resetEveryMonth, resetEveryYear) {
+  if (resetCurrent) {
+    dataChartCurrent.labels=[];
+    dataChartCurrent.dataContent=[];
+  }
+  if (resetEveryDay) {
+    dataChartEveryDay.labels=[];
+    dataChartEveryDay.dataContent=[];
+  }
+  if (resetEveryMonth) {
+    dataChartEveryMonth.labels=[];
+    dataChartEveryMonth.dataContent=[];
+  }
+  if (resetEveryYear) {
+    dataChartEveryYear.labels=[];
+    dataChartEveryYear.dataContent=[];
+  }
   if(chartData.dataChartCurrent) {
     chartData.dataChartCurrent.forEach(function(element) {
       var d = new Date(element.TimeGet);
@@ -394,25 +544,43 @@ $(document).ready(function() {
   var socket = io.connect('http://localhost:3000');
   // Javascript method's body can be found in assets/js/demos.js
 
+  /***************************init all chart on dashboard*************************/
   var NodeID = $("#selectNodes").val();
   socket.emit("client-send-init-node", NodeID);
 
+  socket.on("server-send-init-chart", function(data){
+    pre_processChartData(data, true, true, true, true);
+    userChart.initDashboardPageCharts(dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear)
+  });
+
+  /****************************renew all chart on dashboard**********************/
   $('#selectNodes').on('change',function(){
+    //get NodeID and send server
     NodeID = $(this).val();
-    socket.emit("client-send-init-node", NodeID);
+    socket.emit("client-send-renew-node", NodeID);
+
+    //change status on dashboard
+    $('#selectPowEveryDay') //clear all option first
+        .empty()
+    ;
+    $("#optionSelectedPowEveryDay").html("");
+
+    $('#selectPowEveryMonth') //clear all option first
+        .empty()
+    ;
+    $("#optionSelectedPowEveryMonth").html("");
+
+    //clear all data chart
+    userChart.resetAllChart();
   });
 
-  $('#selectPowEveryDay').on('change',function(){
-    var content = $(this).val();
-    $("#optionSelectedPowEveryDay").html(content);
+  socket.on("server-send-renew-all-chart", function(data){
+    pre_processChartData(data, true, true, true, true);
+    userChart.updateAllChart();
   });
 
-  $('#selectPowEveryMonth').on('change',function(){
-    var content = $(this).val();
-    $("#optionSelectedPowEveryMonth").html(content);
-  });
- 
-  socket.on("server-send-init-everyDay", function(monthsYears) {
+  /******************************renew chart every day***********************/
+  socket.on("server-send-init-everyDay", function(monthsYears) { //add option
     $("#optionSelectedPowEveryDay").html("");
     if(monthsYears) {
       var html = "";
@@ -429,7 +597,27 @@ $(document).ready(function() {
     } 
   });
 
-  socket.on("server-send-init-everyMonth", function(monthsYears) {
+  $('#selectPowEveryDay').on('change',function(){ //option change
+    var content = $(this).val();
+    $("#optionSelectedPowEveryDay").html(content);
+
+    //reset all value in chart before change
+    userChart.resetChartEveryDay();
+
+    NodeID = $("#selectNodes").val();
+
+    var dataSend = {NodeID: NodeID, time: {month: content.slice(0, content.indexOf('/')), year: content.slice(content.indexOf('/')+1)}};
+    socket.emit("client-send-selected-monthYear", dataSend);
+  });
+
+  socket.on("server-send-renew-chartEveryDay", function(data) { //server send
+    pre_processChartData(data, false, true, false, false);
+    //console.log(chartEveryDay);
+    userChart.updateChartEveryDay();
+  });
+
+  /******************************renew chart every month***********************/
+  socket.on("server-send-init-everyMonth", function(monthsYears) { //add option
     $("#optionSelectedPowEveryMonth").html("");
     if(monthsYears) {
       var html = "";
@@ -446,11 +634,24 @@ $(document).ready(function() {
     } 
   });
 
-  socket.on("server-send-init-chart", function(data){
-    pre_processChartData(data);
-    userChart.initDashboardPageCharts(dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear)
+  $('#selectPowEveryMonth').on('change',function(){ //option change
+    var content = $(this).val();
+    $("#optionSelectedPowEveryMonth").html(content);
+
+    //reset all value in chart before change
+    userChart.resetChartEveryMonth();
+
+    NodeID = $("#selectNodes").val();
+
+    socket.emit("client-send-selected-year", {NodeID: NodeID, time: {year: content}});
   });
 
+  socket.on("server-send-renew-chartEveryMonth", function(data) { //server send
+    pre_processChartData(data, false, false, true, false);
+    userChart.updateChartEveryMonth();
+  });
+ 
+  /********************************update current data*****************************/
   socket.on("server-send-current-data", function(data) {
     if (data) {
       var d = new Date(data.TimeGet);
@@ -464,6 +665,7 @@ $(document).ready(function() {
       $("#Pac").html(data.Pac);
       $("#EToday").html(data.EToday);
       $("#EAll").html(data.EAll);
+      console.log(data.StatusConnect);
       if (data.StatusConnect) {
         $("#StatusConnect").html("Connected");
       } else {
@@ -481,6 +683,13 @@ $(document).ready(function() {
       $("#EToday").html("");
       $("#EAll").html("");
       $("#StatusConnect").html("");
+    }
+  });
+  socket.on("server-send-status-connect", function(data) {
+    if (data) {
+      $("#StatusConnect").html("Connected");
+    } else {
+      $("#StatusConnect").html("Disconnected");
     }
   });
 });

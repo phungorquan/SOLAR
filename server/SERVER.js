@@ -122,6 +122,10 @@ io.on("connection", function(socket) {
     console.log(socket.id + " connected");
     socket.on("disconnect", function() {
         console.log(socket.id + " disconnected");
+        if (socket.clientType==="esp_client" && socket.Phong!=="null") {
+          db.updateStatusConnect(socket.Phong, 0);
+          io.sockets.in(socket.Phong).emit("server-send-status-connect", false);
+        }
     });
 
     socket.on("text", function(data) {
@@ -137,6 +141,7 @@ io.on("connection", function(socket) {
                 if(ret) {
                     socket.auth=true;
                     socket.clientType="esp_client";
+                    socket.Phong=data.NodeID;
                 } else {
                     socket.disconnect();
                 }
@@ -149,6 +154,83 @@ io.on("connection", function(socket) {
         };
     });
     socket.on("client-send-init-node", function(NodeID) { //data is NodeID
+      if (NodeID) {
+        processNodes();
+      }
+      async function processNodes () {
+        try {
+          //client leave room
+          if(socket.Phong!=="null") {
+            socket.leave(socket.Phong);
+          }
+          //join room
+          socket.join(NodeID);
+          socket.Phong=NodeID;
+
+          db.updateStatusConnect(socket.Phong, 0);
+
+          //get-send current data
+          var currentData=await db.getCurrentData(NodeID);
+          io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
+          
+          //get collected data today
+          var d = new Date;
+          var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
+
+          var dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear;
+          
+          //data today average per minutes
+          /* dataChartCurrent
+            =false if there is no data found
+            =[{TimeGet: ..., Pac: ...}, ....]
+          */
+          var result=await db.getCollectedDataSpecDay(jsonDate, NodeID);
+          dataChartCurrent=result;
+
+          //data everyday average
+          /* dataChartEveryDay
+            =false if there is no data found
+            =[{TimeGet: ..., Pac: ...}, ....]
+          */
+          result=await db.listMonthsYears(NodeID);
+          io.sockets.in(socket.Phong).emit("server-send-init-everyDay", result);
+          if (result) {
+            var monthsYears = {month: result[0].monthTime, year: result[0].yearTime};
+            //everyDay per month
+            result=await db.getCollectedDataEveryDay(monthsYears, NodeID);
+          }
+          dataChartEveryDay=result;
+
+          //data everymonth average
+          /* dataChartEveryMonth
+            =false if there is no data found
+            =[{TimeGet: ..., Pac: ...}, ....]
+          */
+          result=await db.listYears(NodeID);
+          io.sockets.in(socket.Phong).emit("server-send-init-everyMonth", result);
+          if(result) {
+            var Years = {year: result[0].yearTime};
+            //everyMonth per year
+            result=await db.getCollectedDataEveryMonth(Years, NodeID);
+          }
+          dataChartEveryMonth=result;
+
+          //data everyYear average
+          /* dataChartEveryYear
+            =false if there is no data found
+            =[{TimeGet: ..., Pac: ...}, ....]
+          */
+          result=await db.getCollectedDataEveryYear(NodeID);
+          dataChartEveryYear=result;
+          io.sockets.in(socket.Phong).emit("server-send-init-chart", {dataChartCurrent: dataChartCurrent, dataChartEveryDay: dataChartEveryDay, dataChartEveryMonth: dataChartEveryMonth, dataChartEveryYear: dataChartEveryYear});
+        }
+        catch(err) {
+          throw(err);
+        }
+      } 
+    });
+
+    socket.on("client-send-renew-node", function(NodeID) { //data is NodeID
       if (NodeID) {
         processNodes();
       }
@@ -215,13 +297,14 @@ io.on("connection", function(socket) {
           */
           result=await db.getCollectedDataEveryYear(NodeID);
           dataChartEveryYear=result;
-          io.sockets.in(socket.Phong).emit("server-send-init-chart", {dataChartCurrent: dataChartCurrent, dataChartEveryDay: dataChartEveryDay, dataChartEveryMonth: dataChartEveryMonth, dataChartEveryYear: dataChartEveryYear});
+          io.sockets.in(socket.Phong).emit("server-send-renew-all-chart", {dataChartCurrent: dataChartCurrent, dataChartEveryDay: dataChartEveryDay, dataChartEveryMonth: dataChartEveryMonth, dataChartEveryYear: dataChartEveryYear});
         }
         catch(err) {
           throw(err);
         }
       } 
     });
+
     socket.on("esp_send_data",function(data) {
         if(socket.auth) {
             var d = new Date;
@@ -265,6 +348,42 @@ io.on("connection", function(socket) {
             socket.disconnect();
         }
     });
+
+    //client send request renew chartEverDay
+    socket.on("client-send-selected-monthYear", function(data) {
+      var NodeID=data.NodeID;
+      var monthYear=data.time;
+      //data everyday average
+      /* dataChartEveryDay
+        =false if there is no data found
+        =[{TimeGet: ..., Pac: ...}, ....]
+      */
+      getEveryDay();
+      async function getEveryDay() {
+        try {
+          var dataChartEveryDay=await db.getCollectedDataEveryDay(monthYear, NodeID);
+          socket.emit("server-send-renew-chartEveryDay", {dataChartCurrent: false, dataChartEveryDay: dataChartEveryDay, dataChartEveryMonth: false, dataChartEveryYear: false});
+        } catch(err) {throw err;};
+      };
+    });
+
+    //client send request renew chartEveryMonth
+    socket.on("client-send-selected-year", function(data) {
+      var NodeID=data.NodeID;
+      var monthYear=data.time;
+      //data everymonth average
+      /* dataChartEveryMonth
+        =false if there is no data found
+        =[{TimeGet: ..., Pac: ...}, ....]
+      */
+      getEveryDay();
+      async function getEveryDay() {
+        try {
+          var dataChartEveryMonth=await db.getCollectedDataEveryMonth(monthYear, NodeID);
+          socket.emit("server-send-renew-chartEveryMonth", {dataChartCurrent: false, dataChartEveryDay: false, dataChartEveryMonth: dataChartEveryMonth, dataChartEveryYear: false});
+        } catch(err) {throw err;};
+      };
+    });
 });
 
 app.get('/login', function(req, res, next) {
@@ -287,6 +406,10 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
+app.get('/', function(req, res) {
+  res.send("day la trang chu");
+})
+
 app.get('/dashboard', function(req, res) {
     if (req.isAuthenticated()) {
         nodes();
@@ -307,7 +430,15 @@ app.get('/dashboard', function(req, res) {
 
 app.get('/nodes', function(req, res) {
     if (req.isAuthenticated()) {
-        res.render('nodes');
+        nodes();
+        async function nodes() {
+            try{
+                nodes= await db.listNodes(req.user.ID);
+                if(nodes)
+                    res.render("nodes", {nodes:nodes});
+            }
+            catch(e){throw (e);}
+        };
     }
     else {
         res.redirect('/login');
@@ -316,7 +447,16 @@ app.get('/nodes', function(req, res) {
 
 app.get('/user', function(req, res) {
     if (req.isAuthenticated()) {
-        res.render('user');
+        user();
+        async function user() {
+            try{
+                infoUser=await db.infoUser(req.user.ID);
+                delete infoUser.Pass;
+                if (infoUser)
+                    res.render("user", {infoUser: infoUser});
+            }
+            catch(e){throw (e);}
+        };
     }
     else {
         res.redirect('/login');

@@ -52,6 +52,19 @@ exports.deleteUser = function (username, pass) {
 	});
 }
 
+exports.infoUser = function (username) {
+	return new Promise (function (resolve, reject) {
+		pool.query("select * from users where ID=upper('"+username+"');", function(err, rows, fields) { 
+			if (err) reject(err); 
+			if(rows.length>=1){
+				resolve(rows[0]);
+			} else {
+				resolve(false);
+			}
+		});
+	});
+}
+
 exports.listNodes = function (username) {
 	return new Promise (function (resolve, reject) {
 		pool.query("select * from nodes where ID=upper('"+username+"');", function(err, rows, fields) { 
@@ -92,6 +105,8 @@ exports.getCurrentData = function (NodeID) {
 		pool.query("select * from currentdata where NodeID=upper('"+NodeID+"');", function(err, rows, fields) { 
 			if (err) reject(err); 
 			if(rows.length>=1) {
+				let status=new Uint8Array(rows[0].StatusConnect);
+				rows[0].StatusConnect=status[0];
 				resolve(rows[0]);
 			} else {
 				resolve(false);
@@ -102,7 +117,7 @@ exports.getCurrentData = function (NodeID) {
 
 exports.getCollectedDataSpecDay = function (dateTime, NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select AVG(Pac) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" and day(TimeGet)="+dateTime.day+" group by hour(TimeGet), minute(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" and day(TimeGet)="+dateTime.day+" group by hour(TimeGet), minute(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -115,7 +130,7 @@ exports.getCollectedDataSpecDay = function (dateTime, NodeID) {
 
 exports.getCollectedDataEveryDay = function (dateTime, NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select AVG(Pac) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" group by day(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" group by day(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -128,7 +143,7 @@ exports.getCollectedDataEveryDay = function (dateTime, NodeID) {
 
 exports.getCollectedDataEveryMonth = function (dateTime, NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select AVG(Pac) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" group by month(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" group by month(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -141,7 +156,7 @@ exports.getCollectedDataEveryMonth = function (dateTime, NodeID) {
 
 exports.getCollectedDataEveryYear = function (NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select AVG(Pac) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') group by year(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') group by year(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -205,8 +220,14 @@ exports.updateCurrentData = function (username, NodeID, data) {
 		Tem="+data.Tem+", Pac="+data.Pac+", EToday="+data.EToday+", EAll="+data.EAll+", \
 		StatusConnect="+data.StatusConnect+" \
 		where ID='"+username+"' and NodeID='"+NodeID+"';", function(err, result) {
-	if(err) throw err;
-});
+			if(err) throw err;
+	});
+}
+
+exports.updateStatusConnect = function (NodeID, status) {
+	pool.query("update currentdata set StatusConnect="+status+" where NodeID='"+NodeID+"';", function(err,result) {
+		if(err) throw err;
+	});
 }
 
 exports.insertCollectedData = function (username, NodeID, data) {
