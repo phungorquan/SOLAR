@@ -29,7 +29,7 @@ SocketIOClient client;
 const char* ssid = "lee-lap";          //Tên mạng Wifi mà Socket server của bạn đang kết nối
 const char* password = "lee221221";  //Pass mạng wifi ahihi, anh em rãnh thì share pass cho mình với.
      
-char host[] = "192.168.0.113";  //Địa chỉ IP dịch vụ, hãy thay đổi nó theo địa chỉ IP Socket server của bạn.
+char host[] = "192.168.137.1";  //Địa chỉ IP dịch vụ, hãy thay đổi nó theo địa chỉ IP Socket server của bạn.
 int port = 3000;                  //Cổng dịch vụ socket server do chúng ta tạo!
      
 //từ khóa extern: dùng để #include các biến toàn cục ở một số thư viện khác. Trong thư viện SocketIOClient có hai biến toàn cục
@@ -135,7 +135,7 @@ void setup() {
   delay(1);
   Serial.println();
   //-------------encryption----------------
-  randomSeed(analogRead(0));
+  randomSeed(digitalRead(15));
   //wifi
   Serial.print("Ket noi vao mang ");
   Serial.println(ssid);
@@ -181,6 +181,7 @@ void setup() {
 void loop() {
   //tạo một task cứ sau "interval" giây thì chạy lệnh:
   if ((millis() - previousMillisSendCurrent > intervalSendCurrent) && client.connected()) {
+      Serial.println(analogRead(2));
       Serial.println("send current data");
       output="";
       previousMillisSendCurrent = millis();

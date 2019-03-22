@@ -78,27 +78,27 @@
           <div class="col-md-8">
             <div class="card">
               <div class="card-header">
-                <h5 class="title">Edit Profile</h5>
+                <button type="button" id="editProfile" class="title">Edit Profile</button>
               </div>
               <div class="card-body">
-                <form>
+                <form method="get" action="/editProfile">
                   <div class="row">
                     <div class="col-md-5 pr-1">
                       <div class="form-group">
                         <label>Company</label>
-                        <input type="text" class="form-control" disabled="" placeholder="Company" value="<%- infoUser.Company %>">
+                        <input type="text" name="company" class="form-control" disabled="" placeholder="Company" value="<%- infoUser.Company %>">
                       </div>
                     </div>
                     <div class="col-md-3 px-1">
                       <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="form-control" disabled="" placeholder="Username" value="<%- infoUser.ID %>">
+                        <input type="text" id="username" class="form-control" disabled="" placeholder="Username" value="<%- infoUser.ID %>">
                       </div>
                     </div>
                     <div class="col-md-4 pl-1">
                       <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" disabled="" placeholder="Email" value="  <%- infoUser.Email %>">
+                        <input type="email" name="email" class="form-control" disabled="" placeholder="Email" value="  <%- infoUser.Email %>">
                       </div>
                     </div>
                   </div>
@@ -106,13 +106,13 @@
                     <div class="col-md-6 pr-1">
                       <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="form-control" disabled="" placeholder="First Name" value="<%- infoUser.FirstName %>">
+                        <input type="text" name="firstName" class="form-control" disabled="" placeholder="First Name" value="<%- infoUser.FirstName %>">
                       </div>
                     </div>
                     <div class="col-md-6 pl-1">
                       <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="form-control" disabled="" placeholder="Last Name" value="<%- infoUser.LastName %>">
+                        <input type="text" name="lastName" class="form-control" disabled="" placeholder="Last Name" value="<%- infoUser.LastName %>">
                       </div>
                     </div>
                   </div>
@@ -120,7 +120,7 @@
                     <div class="col-md-12">
                       <div class="form-group">
                         <label>Address</label>
-                        <input type="text" class="form-control" disabled="" placeholder="Home Address" value="<%- infoUser.Address %>">
+                        <input type="text" name="address" class="form-control" disabled="" placeholder="Home Address" value="<%- infoUser.Address %>">
                       </div>
                     </div>
                   </div>
@@ -128,13 +128,13 @@
                     <div class="col-md-6 pr-1">
                       <div class="form-group">
                         <label>City</label>
-                        <input type="text" class="form-control" disabled="" placeholder="City" value="<%- infoUser.City %>">
+                        <input type="text" name="city" class="form-control" disabled="" placeholder="City" value="<%- infoUser.City %>">
                       </div>
                     </div>
                     <div class="col-md-6 px-1">
                       <div class="form-group">
                         <label>Country</label>
-                        <input type="text" class="form-control" disabled="" placeholder="Country" value="<%- infoUser.Country %>">
+                        <input type="text" name="country" class="form-control" disabled="" placeholder="Country" value="<%- infoUser.Country %>">
                       </div>
                     </div>
                   </div>
@@ -142,10 +142,44 @@
                     <div class="col-md-12">
                       <div class="form-group">
                         <label>About Me</label>
-                        <textarea rows="4" cols="80" class="form-control" placeholder="Here can be your description"><%- infoUser.About %></textarea>
+                        <textarea id="aboutOutput" rows="4" cols="80" class="form-control" placeholder=""><%- infoUser.About %></textarea>
+                        <input id="aboutInput" type="text" name="about" class="form-control" placeholder="<%- infoUser.About %>"">
                       </div>
                     </div>
                   </div>
+                  <div id="slogan" class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Slogan</label>
+                        <input type="text" name="slogan" class="form-control" placeholder="<%- infoUser.Slogan %>"">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="avatar" class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Link Avatar</label>
+                        <input type="text" name="avatar" class="form-control" placeholder="<%- infoUser.Avatar %>"">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="coverAvatar" class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Link Cover Avatar</label>
+                        <input type="text" name="coverAvatar" class="form-control" placeholder="<%- infoUser.CoverAvatar %>"">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="linkInfo" class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>Link Social Network</label>
+                        <input type="text" name="linkInfo" class="form-control" placeholder="<%- infoUser.LinkInfo %>">
+                      </div>
+                    </div>
+                  </div>
+                  <input type="submit" id="completed" class="title" value="Completed!"></input>
                 </form>
               </div>
             </div>
@@ -159,7 +193,7 @@
                 <div class="author">
                   <a href="#">
                     <img class="avatar border-gray" src="<%- infoUser.Avatar %>" alt="...">
-                    <h5 class="title"><%- infoUser.FirstName + infoUser.LastName %></h5>
+                    <h5 class="title"><%- infoUser.FirstName +" "+ infoUser.LastName %></h5>
                   </a>
                   <p class="description">
                     <%- infoUser.LinkInfo %>
@@ -210,6 +244,7 @@
   <script src="../assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/now-ui-dashboard.min.js?v=1.3.0" type="text/javascript"></script>
+  <script src="xuly_form_user.js"></script>
 </body>
 
 </html>

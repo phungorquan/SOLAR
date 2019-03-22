@@ -1,0 +1,130 @@
+req:
+{
+  user: {
+    NodeID: ...
+    (thu nghiem voi node id truoc, ko can dang nhap)
+  },
+  //dùng để lấy dữ liệu trong ngày đó (tổng hợp theo giờ)
+  day: {day:..., month:..., year:...} (now),
+    //dùng để lấy dữ liệu trong tháng đó (tổng hợp theo ngày)
+  month: {month:..., year:...} (now),
+    //dùng để lấy dữ liệu trong năm đó (tổng hợp theo tháng)
+  year: ... (now)
+}
+
+res:
+{
+  current: {
+    TimeGet: (string)
+    PV_Vol
+    PV_Amp
+    Bus
+    AC_Vol
+    AC_Hz
+    Tem
+    Pac
+    EToday
+    EAll
+    StatusConnect (0,1)
+  },
+  collected: {
+    day: [ //dữ liệu của ngày đã request (timeget phân theo giờ)
+      {
+        TimeGet: (string)
+        Pac: (num)
+      }, ...
+    ],
+    month: [ //dữ liệu của tháng đã request (timeget phân theo ngày)
+      {
+        TimeGet: (string)
+        Pac: (num)
+      }, ...
+    ],
+    year: [ //dữ liệu của năm đã request (timeget phân theo tháng)
+      {
+        TimeGet: (string)
+        Pac: (num)
+      }, ...
+    ],
+    years: [ //dữ liệu của từng năm (không cần request, timeget phân theo năm)
+      {
+        TimeGet: (string)
+        Pac: (num)
+      }, ...
+    ]
+  }
+}
+
+//mẫu response
+
+{
+    "collected": {
+        "day": [
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:14:00.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:15:00.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:16:00.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:17:00.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:18:00.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T08:19:00.000Z"
+            }
+        ],
+        "month": [
+            {
+                "Pac": 119.7,
+                "TimeGet": "2019-03-14T02:07:35.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-14T20:43:42.000Z"
+            },
+            {
+                "Pac": 100,
+                "TimeGet": "2019-03-18T20:51:01.000Z"
+            }
+        ],
+        "year": [
+            {
+                "Pac": 116.7,
+                "TimeGet": "2019-03-14T02:07:35.000Z"
+            }
+        ],
+        "years": [
+            {
+                "Pac": 116.7,
+                "TimeGet": "2019-03-14T02:07:35.000Z"
+            }
+        ]
+    },
+    "current": {
+        "ID": "CEEC",
+        "TimeGet": "2019-03-18T21:11:45.000Z",
+        "PV_Vol": 89,
+        "PV_Amp": 92,
+        "Bus": 169,
+        "AC_Vol": 230,
+        "AC_Hz": 200,
+        "Tem": 25,
+        "Pac": 100,
+        "EToday": 62,
+        "EAll": 34,
+        "StatusConnect": 1,
+        "NodeID": "CEEC_0"
+    }
+}

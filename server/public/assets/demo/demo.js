@@ -61,10 +61,6 @@ userChart = {
     chartEveryYear.update();
   },
   updateChartCurrent: function () {
-    while (chartCurrent.data.labels.length) {
-      chartCurrent.data.labels.pop();
-      chartCurrent.data.datasets[0].data.pop();
-    }
     for (let i=0; i<dataChartCurrent.labels.length; i++) {
       chartCurrent.data.labels.push(dataChartCurrent.labels[i]);
       chartCurrent.data.datasets[0].data.push(dataChartCurrent.dataContent[i]);
@@ -144,13 +140,6 @@ userChart = {
       chartEveryYear.data.datasets[0].data.push(dataChartEveryYear.dataContent[i]);
     }
     chartEveryYear.update();
-  },
-  addChartEveryDay: function  (data) {
-    chartEveryDay.data.labels.push(data.TimeGet);
-    chartEveryDay.data.datasets.forEach((dataset) => {
-        dataset.data.push(data.Pac);
-    });
-    chartEveryDay.update();
   },
   initDashboardPageCharts: function (dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear) {
 
@@ -541,8 +530,56 @@ function pre_processChartData (chartData, resetCurrent, resetEveryDay, resetEver
 }
 
 $(document).ready(function() {
-  var socket = io.connect('http://localhost:3000');
+  var socket = io();
   // Javascript method's body can be found in assets/js/demos.js
+
+  socket.on("server-send-collected-today", function(data) {
+    if (data) {
+      var d = new Date(data.TimeGet);
+      var label=d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+      console.log("da nhan du lieu moi");
+      if (chartCurrent.data.labels.length!==0) {
+        var latestLabel = chartCurrent.data.labels[chartCurrent.data.labels.length-1]
+        var latestHour = latestLabel.slice(0, latestLabel.indexOf(':'));
+        var latestMinute = latestLabel.slice(latestLabel.indexOf(':')+1, latestLabel.indexOf(':', latestLabel.indexOf(':')+1))
+        
+        //new suit data (new minute updated)
+        if (d.getHours() >= latestHour && d.getMinutes() > latestMinute) {
+          console.log('new minute');
+          chartCurrent.data.labels.push(label);
+          chartCurrent.data.datasets[0].data.push(data.Pac);
+          chartCurrent.update();
+        }
+        //new day come
+        if (d.getHours() < latestHour) {
+          console.log('new day come');
+          while (chartCurrent.data.labels.length) {
+            chartCurrent.data.labels.pop();
+            chartCurrent.data.datasets[0].data.pop();
+          }
+          chartCurrent.data.labels.push(label);
+          chartCurrent.data.datasets[0].data.push(data.Pac);
+          chartCurrent.update();
+        }
+        // new data but same minute
+        if (d.getHours() >= latestHour && d.getMinutes() == latestMinute) {
+          console.log('same minute');
+          //get rid of old data same minute
+          chartCurrent.data.labels.pop();
+          chartCurrent.data.datasets[0].data.pop();
+          //push new data
+          chartCurrent.data.labels.push(label);
+          chartCurrent.data.datasets[0].data.push(data.Pac);
+          chartCurrent.update();
+        }
+      } else {
+        console.log("first of day");
+        chartCurrent.data.labels.push(label);
+        chartCurrent.data.datasets[0].data.push(data.Pac);
+        chartCurrent.update();
+      }
+    }
+  });
 
   /***************************init all chart on dashboard*************************/
   var NodeID = $("#selectNodes").val();
@@ -665,7 +702,6 @@ $(document).ready(function() {
       $("#Pac").html(data.Pac);
       $("#EToday").html(data.EToday);
       $("#EAll").html(data.EAll);
-      console.log(data.StatusConnect);
       if (data.StatusConnect) {
         $("#StatusConnect").html("Connected");
       } else {

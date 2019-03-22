@@ -171,6 +171,7 @@ io.on("connection", function(socket) {
 
           //get-send current data
           var currentData=await db.getCurrentData(NodeID);
+          currentData.StatusConnect=0;
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
           
           //get collected data today
@@ -244,8 +245,11 @@ io.on("connection", function(socket) {
           socket.join(NodeID);
           socket.Phong=NodeID;
 
+          db.updateStatusConnect(socket.Phong, 0);
+
           //get-send current data
           var currentData=await db.getCurrentData(NodeID);
+          currentData.StatusConnect=0;
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
           
           //get collected data today
@@ -336,13 +340,20 @@ io.on("connection", function(socket) {
               io.sockets.in(newData.NodeID).emit("server-send-current-data", newData);
               db.updateCurrentData(newData.ID, newData.NodeID, newData);
             } else if(newData.CurrentOrCollected===1) {
-              db.insertCollectedData(newData.ID, newData.NodeID, newData);
-              db.getCollectedDataSpecDay(jsonDate, newData.NodeID).then(function (result) {
-                  //just get newest data
-                  io.sockets.in(newData.NodeID).emit("server-send-collected-today", result[result.length-1]);
-              }, function (err) {
-                  io.sockets.in(newData.NodeID).emit("server-send-collected-today", false);
-              });
+              insert_send();
+              async function insert_send() {
+                try {
+                  await db.insertCollectedData(newData.ID, newData.NodeID, newData);
+                  result = await db.getCollectedDataSpecDay(jsonDate, newData.NodeID);
+                  if(result) {
+                    io.sockets.in(newData.NodeID).emit("server-send-collected-today", result[result.length-1]);
+                  }
+                  else {
+                    console.log("result that bai");
+                    io.sockets.in(newData.NodeID).emit("server-send-collected-today", false);
+                  }
+                } catch(err) {throw err;}
+              }
             }
         } else {
             socket.disconnect();
@@ -470,6 +481,73 @@ app.get('/notifications', function(req, res) {
     else {
         res.redirect('/login');
     }
+});
+
+app.get('/editProfile', function(req, res) {
+    if (req.isAuthenticated()) {
+        update();
+        async function update() {
+          try {
+            await db.updateInfoUser(req.user.ID, req.query);
+            res.redirect('/user');
+          }
+          catch(err) {throw err;}
+          res.send("error update user!, try again");
+        }
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.post('/androidReqData', function(req, res) {
+  /*console.log(req.body);
+  res.send({mess: "hello"});*/
+  if (!req.body || !req.body.user || !req.body.day || !req.body.month || !req.body.year) return res.sendStatus(400);
+  resData();
+  async function resData() {
+    try {
+      var NodeID=JSON.parse(req.body.user).NodeID;
+      var d = new Date;
+      var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
+      var resPacDay, resPacMonth, resPacYear, resPacYears;
+
+      if(req.body.day!=="now") {
+        resPacDay = await db.getCollectedDataSpecDay(JSON.parse(req.body.day), NodeID);
+      } else if(req.body.day==="disable") {
+        resPacDay = false;
+      } else {
+        resPacDay = await db.getCollectedDataSpecDay(jsonDate, NodeID);
+      }
+
+
+      if(req.body.month!=="now") {
+        resPacMonth = await db.getCollectedDataEveryDay(JSON.parse(req.body.month), NodeID);
+      } else if(req.body.month==="disable") {
+        resPacDay = false;
+      } else {
+        resPacMonth = await db.getCollectedDataEveryDay(jsonDate, NodeID);
+      }
+
+      if(req.body.year!=="now") {
+        resPacYear = await db.getCollectedDataEveryMonth({year: req.body.year}, NodeID);
+      } else if(req.body.year==="disable") {
+        resPacDay = false;
+      } else {
+        resPacYear = await db.getCollectedDataEveryMonth(jsonDate, NodeID);
+      }
+
+      if(req.body.years==="disable") {
+        resPacDay = false;
+      } else {
+        resPacYears = await db.getCollectedDataEveryYear(NodeID);
+      }
+
+      var current = await db.getCurrentData(NodeID);
+
+      res.send({collected: {day: resPacDay, month: resPacMonth, year: resPacYear, years: resPacYears}, current: current});
+    } catch (err) {throw err;}
+  }
 });
 
 server.listen(3000);

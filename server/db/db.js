@@ -65,6 +65,19 @@ exports.infoUser = function (username) {
 	});
 }
 
+exports.updateInfoUser = function (username, data) {
+	return new Promise (function (resolve, reject) {
+		pool.query("update users\
+			set Company= '"+data.company+"', Email= '"+data.email+"', FirstName= '"+data.firstName+"', LastName= '"+data.lastName+"', \
+			Address= '"+data.address+"', City= '"+data.city+"', About= '"+data.about+"', LinkInfo= '"+data.linkInfo+"', \
+			Slogan= '"+data.slogan+"', Country= '"+data.country+"', Avatar= '"+data.avatar+"', \
+			CoverAvatar= '"+data.coverAvatar+"' where ID= '"+username+"';", function(err, result) { 
+			if (err) reject(err);
+			resolve(true);
+		});
+	});
+};
+
 exports.listNodes = function (username) {
 	return new Promise (function (resolve, reject) {
 		pool.query("select * from nodes where ID=upper('"+username+"');", function(err, rows, fields) { 
@@ -231,10 +244,12 @@ exports.updateStatusConnect = function (NodeID, status) {
 }
 
 exports.insertCollectedData = function (username, NodeID, data) {
-	pool.query("insert into collecteddata (ID, TimeGet, Pac, NodeID) values\
-		(upper('"+username+"'), '"+data.TimeGet+"', "+data.Pac+", upper('"+NodeID+"'));", function(err, result) {
-		
-		if(err) throw err;
+	return new Promise (function (resolve, reject) {
+		pool.query("insert into collecteddata (ID, TimeGet, Pac, NodeID) values\
+			(upper('"+username+"'), '"+data.TimeGet+"', "+data.Pac+", upper('"+NodeID+"'));", function(err, result) {
+			if (err) reject(err);
+			resolve(true);
+		});
 	});
 }
 
