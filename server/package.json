@@ -1,12 +1,12 @@
 {
-  "name": "passport_socketio",
+  "name": "ceecsolarsystem",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "SERVER.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "lê",
+  "author": "LEE",
   "license": "ISC",
   "dependencies": {
     "aes-js": "^3.1.2",
