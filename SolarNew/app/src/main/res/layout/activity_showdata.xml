@@ -4,86 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout_editor_absoluteY="50dp">
-
-    <TextView
-        android:id="@+id/txv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="236dp"
-        android:text="Field1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="80dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="236dp"
-        android:text="Field2"
-        app:layout_constraintStart_toEndOf="@+id/txv1"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txv3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="236dp"
-        android:text="Field3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/txv2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txv11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="76dp"
-        android:layout_marginRight="76dp"
-        android:layout_marginTop="36dp"
-        android:text="Afield1"
-        app:layout_constraintEnd_toStartOf="@+id/txv22"
-        app:layout_constraintTop_toBottomOf="@+id/txv1" />
-
-    <TextView
-        android:id="@+id/txv22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="84dp"
-        android:layout_marginRight="84dp"
-        android:layout_marginTop="36dp"
-        android:text="Afield2"
-        app:layout_constraintEnd_toStartOf="@+id/txv33"
-        app:layout_constraintTop_toBottomOf="@+id/txv2" />
-
-    <TextView
-        android:id="@+id/txv33"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="36dp"
-        android:text="Afield3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv3" />
+    tools:layout_editor_absoluteY="81dp">
 
     <Button
         android:id="@+id/btnhis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
+        android:layout_marginBottom="18dp"
         android:text="History"
+        app:layout_constraintBottom_toTopOf="@+id/lstview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/lstview"
+        android:layout_width="362dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnhis" />
 
 </android.support.constraint.ConstraintLayout>

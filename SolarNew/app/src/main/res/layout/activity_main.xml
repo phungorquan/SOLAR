@@ -19,14 +19,14 @@
 
     <EditText
         android:id="@+id/edtID"
-        android:layout_width="match_parent"
+        android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:hint="ID"
         android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/edtPASS"
-        android:layout_width="match_parent"
+        android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Password"

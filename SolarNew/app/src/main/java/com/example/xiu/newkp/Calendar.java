@@ -39,7 +39,7 @@ public class Calendar extends AppCompatActivity {
 
 
 
-        final String urlgetdata = "http://192.168.1.3:1234/SOLAR/Calendar.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
+        final String urlgetdata =  "http://ceecsolarsystem.herokuapp.com/androidReqData";//"http://192.168.1.3:1234/SOLAR/Calendar.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
         calendar = (CalendarView) findViewById(R.id.cld);
         txv1 = (TextView) findViewById(R.id.txvF1);
         txv2 = (TextView) findViewById(R.id.txvF2);
@@ -123,7 +123,7 @@ public class Calendar extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("DATE",date.trim());
-                params.put("Getid",Getaccount.trim());
+                params.put("ID",Getaccount.trim());
                 return params;
             }
         };

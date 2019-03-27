@@ -27,7 +27,7 @@ import java.util.Map;
 public class RegisterAccount extends AppCompatActivity {
     TextView tvReg;
     EditText edtID,edtPASS,edtPASSCON;
-    String urlpostdata = "http://192.168.1.3:1234/SOLAR/Reg.php";//"http://192.168.1.7:1234/SOLAR/Reg.php";
+    String urlpostdata = "http:192.168.0.113:3000";//"http://lee-ceec.000webhostapp.com/solar/Android/Reg.php";//"http://192.168.1.3:1234/SOLAR/Reg.php";//"http://192.168.1.7:1234/SOLAR/Reg.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +37,13 @@ public class RegisterAccount extends AppCompatActivity {
         getSupportActionBar().setTitle("Register");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (!(networkInfo != null && networkInfo.isConnected())) {
-            Toast.makeText(RegisterAccount.this,"WIFI is DISCONNECTED", Toast.LENGTH_SHORT).show();
-        }
-
         edtID = (EditText) findViewById(R.id.edtID);
         edtPASS = (EditText)findViewById(R.id.edtPASS);
         edtPASSCON = (EditText)findViewById(R.id.edtPASSCON);
         tvReg = (TextView) findViewById(R.id.txvReg);
         tvReg.setText("REGISTER");
+
+        final Global g = (Global)getApplication();
 
 
 
@@ -57,19 +53,17 @@ public class RegisterAccount extends AppCompatActivity {
                 String id = edtID.getText().toString().trim();
                 String pass = edtPASS.getText().toString().trim();
                 String passconfirm = edtPASSCON.getText().toString().trim();
-                final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
+
+                if(g.CheckWIFI(RegisterAccount.this) == true)
+                {
                     if (id.isEmpty() || pass.isEmpty()) {
                         Toast.makeText(RegisterAccount.this, "Nhập đủ đi", Toast.LENGTH_SHORT).show();
                     } else {
                         if (pass.equals(passconfirm))
                             Register(urlpostdata);
                         else
-                            Toast.makeText(RegisterAccount.this, "Kiem tra lai password", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterAccount.this, "Password khong giong nhau", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
-                    Toast.makeText(RegisterAccount.this,"WIFI is DISCONNECTED", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -110,7 +104,6 @@ public class RegisterAccount extends AppCompatActivity {
                         //Log.d("AAA","Lỗi\n" + error.toString());
                     }
                 }
-
 
         ){
             @Override
