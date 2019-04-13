@@ -1,11 +1,11 @@
 var mysql      = require('mysql');
 	
 var pool = mysql.createPool({
-    connectionLimit: 5,
-    host     : 'localhost',
-  	user     : 'ceec_solar_manager',
-  	password : 'qwerty123456789',
-  	database : 'ceec_solar'
+    connectionLimit: 20,
+    host     : 'us-cdbr-iron-east-03.cleardb.net',
+  	user: 'bf18d06e29280a', 
+    password: '6789a095',
+    database: 'heroku_93c0d4bea167c0e'
 });
 
 exports.checkLogin = function (username, pass) {
@@ -89,7 +89,7 @@ exports.listNodes = function (username) {
 
 exports.listMonthsYears = function (NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("SELECT DISTINCT YEAR(TimeGet) as yearTime, MONTH(TimeGet) as monthTime FROM CollectedData where NodeID='"+NodeID+"';", function(err, rows, fields) { 
+		pool.query("SELECT DISTINCT YEAR(TimeGet) as yearTime, MONTH(TimeGet) as monthTime FROM Statistics where NodeID='"+NodeID+"';", function(err, rows, fields) { 
 			if (err) reject(err); 
 			if(rows.length>=1) {
 				resolve(rows);
@@ -102,7 +102,7 @@ exports.listMonthsYears = function (NodeID) {
 
 exports.listYears = function (NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("SELECT DISTINCT YEAR(TimeGet) as yearTime FROM CollectedData where NodeID='"+NodeID+"';", function(err, rows, fields) { 
+		pool.query("SELECT DISTINCT YEAR(TimeGet) as yearTime FROM Statistics where NodeID='"+NodeID+"';", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -141,9 +141,22 @@ exports.getCollectedDataSpecDay = function (dateTime, NodeID) {
 	});
 }
 
+exports.getStatisticsDataSpecDay = function (dateTime, NodeID) {
+	return new Promise (function (resolve, reject) {
+		pool.query("select ROUND(AVG(EToday), 1) as EToday, TimeGet from Statistics where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" and day(TimeGet)="+dateTime.day+" group by hour(TimeGet), minute(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+			if (err) reject(err);
+			if(rows.length>=1) {
+				resolve(rows[0]);
+			} else {
+				resolve(false);
+			}
+		});
+	});
+}
+
 exports.getCollectedDataEveryDay = function (dateTime, NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" group by day(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(EToday), 1) as EToday, TimeGet from Statistics where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" and month(TimeGet)="+dateTime.month+" group by day(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -156,7 +169,7 @@ exports.getCollectedDataEveryDay = function (dateTime, NodeID) {
 
 exports.getCollectedDataEveryMonth = function (dateTime, NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" group by month(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(EToday), 1) as EToday, TimeGet from Statistics where NodeID=upper('"+NodeID+"') and year(TimeGet)="+dateTime.year+" group by month(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
@@ -169,13 +182,42 @@ exports.getCollectedDataEveryMonth = function (dateTime, NodeID) {
 
 exports.getCollectedDataEveryYear = function (NodeID) {
 	return new Promise (function (resolve, reject) {
-		pool.query("select ROUND(AVG(Pac), 1) as Pac, TimeGet from collecteddata where NodeID=upper('"+NodeID+"') group by year(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
+		pool.query("select ROUND(AVG(EToday), 1) as EToday, TimeGet from Statistics where NodeID=upper('"+NodeID+"') group by year(TimeGet) order by TimeGet ASC;", function(err, rows, fields) { 
 			if (err) reject(err);
 			if(rows.length>=1) {
 				resolve(rows);
 			} else {
 				resolve(false);
 			}
+		});
+	});
+}
+
+exports.getLatestEToday = function (dateTime, NodeID) {
+	return new Promise (function (resolve, reject) {
+		pool.query("select * from Statistics where NodeID=upper('"+NodeID+"') and day(TimeGet)="+dateTime.day+" and month(TimeGet)="+dateTime.month+" and year(TimeGet)="+dateTime.year+";", function(err, rows, fields) { 
+			if (err) reject(err);
+			if(rows.length>=1) {
+				resolve(rows[0]);
+			} else {
+				resolve(false);
+			}
+		});
+	});
+}
+
+exports.updateEToday = function (IndexData, data) {
+	pool.query("update Statistics set TimeGet='"+data.TimeGet+"', EToday="+data.EToday+" where IndexData="+IndexData+";", function(err,result) {
+		if(err) throw err;
+	});
+}
+
+exports.insertStatistics = function (username, NodeID, data) {
+	return new Promise (function (resolve, reject) {
+		pool.query("insert into Statistics (ID, TimeGet, EToday, NodeID) values\
+			(upper('"+username+"'), '"+data.TimeGet+"', "+data.EToday+", upper('"+NodeID+"'));", function(err, result) {
+			if (err) reject(err);
+			resolve(true);
 		});
 	});
 }

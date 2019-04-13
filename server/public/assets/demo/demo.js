@@ -502,6 +502,7 @@ function pre_processChartData (chartData, resetCurrent, resetEveryDay, resetEver
   if(chartData.dataChartCurrent) {
     chartData.dataChartCurrent.forEach(function(element) {
       var d = new Date(element.TimeGet);
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
       dataChartCurrent.labels.push(d.getHours().toString()+':'+d.getMinutes().toString()+':'+d.getSeconds().toString());
       dataChartCurrent.dataContent.push(element.Pac);
     });
@@ -509,22 +510,25 @@ function pre_processChartData (chartData, resetCurrent, resetEveryDay, resetEver
   if(chartData.dataChartEveryDay) {
     chartData.dataChartEveryDay.forEach(function(element) {
       var d = new Date(element.TimeGet);
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
       dataChartEveryDay.labels.push(d.getDate().toString()+'/'+(d.getMonth()+1).toString()+'/'+d.getFullYear().toString());
-      dataChartEveryDay.dataContent.push(element.Pac);
+      dataChartEveryDay.dataContent.push(element.EToday);
     });
   }
   if(chartData.dataChartEveryMonth) {
     chartData.dataChartEveryMonth.forEach(function(element) {
       var d = new Date(element.TimeGet);
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
       dataChartEveryMonth.labels.push((d.getMonth()+1).toString()+'/'+d.getFullYear().toString());
-      dataChartEveryMonth.dataContent.push(element.Pac);
+      dataChartEveryMonth.dataContent.push(element.EToday);
     });
   }
   if(chartData.dataChartEveryYear) {
     chartData.dataChartEveryYear.forEach(function(element) {
       var d = new Date(element.TimeGet);
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
       dataChartEveryYear.labels.push(d.getFullYear().toString());
-      dataChartEveryYear.dataContent.push(element.Pac);
+      dataChartEveryYear.dataContent.push(element.EToday);
     });
   }
 }
@@ -535,7 +539,8 @@ $(document).ready(function() {
 
   socket.on("server-send-collected-today", function(data) {
     if (data) {
-      var d = new Date(data.TimeGet);
+      var d=new Date();
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000);
       var label=d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
       console.log("da nhan du lieu moi");
       if (chartCurrent.data.labels.length!==0) {
@@ -692,7 +697,8 @@ $(document).ready(function() {
   socket.on("server-send-current-data", function(data) {
     if (data) {
       var d = new Date(data.TimeGet);
-      $("#TimeGet").html(d.getHours().toString()+':'+d.getMinutes().toString()+':'+d.getSeconds().toString());
+      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
+      $("#TimeGet").html((d.getHours()).toString()+':'+d.getMinutes().toString()+':'+d.getSeconds().toString());
       $("#PV_Vol").html(data.PV_Vol);
       $("#PV_Amp").html(data.PV_Amp);
       $("#Bus").html(data.Bus);

@@ -4,19 +4,23 @@ var express = require('express'), // express framework
     MySQLStore = require('connect-mysql')(session), // mysql session store
     options = {
       config: {
-        user: 'ceec_solar_manager', 
-        password: 'qwerty123456789',
-        database: 'ceec_solar' 
+        user: 'bf18d06e29280a', 
+        password: '6789a095',
+        database: 'heroku_93c0d4bea167c0e',
+        host: 'us-cdbr-iron-east-03.cleardb.net'
       }
     },
     app = express();
 var sessionStore = new MySQLStore(options);
+
+var port = 3484;
 
 app.use(express.static("./public"));
 app.set("view engine","ejs");
 app.set("views", "./views");
 
 var server = require("http").Server(app);
+var flash = require('connect-flash');
 
 //database
 var db = require("./db/db");
@@ -51,20 +55,25 @@ passport.deserializeUser(function(user, done) {
 
 //authenticate passport
 passport.use('local', new  localStrategy({passReqToCallback : true}, (req, username, password, done) => {
-
     loginAttempt();
 
     async function loginAttempt() {
         try{
-            var ID="";
             infoUser= await db.checkLogin(username,password);
-            console.log("login success");
             return done(null, {ID: infoUser.ID});
         }
         catch(e){throw (e);return done(new Error("query database"));}
         };
     }
 ));
+
+/*passport.use(new localStrategy({
+  passReqToCallback : true
+}, function(req, username, password, done) { 
+  console.log(username);
+  console.log(password);
+  return done(new Error("query database"));
+}));*/
 
 //socket io and pass port
 var io = require("socket.io")(server);
@@ -102,8 +111,10 @@ function onAuthorizeFail(data, message, error, accept){
   //accept(null, false);
   //console.log(data);
 
+  //console.log(data.headers['user-agent']);
+
   // OR
-  if(data.headers.origin==="Arduino") {
+  if(data.headers['user-agent']==="arduino-WebSocket-Client") {
     accept();
   }
   // If you use socket.io@1.X the callback looks different
@@ -128,10 +139,6 @@ io.on("connection", function(socket) {
         }
     });
 
-    socket.on("text", function(data) {
-        console.log(data);
-    });
-
     socket.on("authentication", function(data) {
         authEsp();
         async function authEsp() {
@@ -142,6 +149,7 @@ io.on("connection", function(socket) {
                     socket.auth=true;
                     socket.clientType="esp_client";
                     socket.Phong=data.NodeID;
+                    socket.emit("esp-join-success");
                 } else {
                     socket.disconnect();
                 }
@@ -154,6 +162,7 @@ io.on("connection", function(socket) {
         };
     });
     socket.on("client-send-init-node", function(NodeID) { //data is NodeID
+
       if (NodeID) {
         processNodes();
       }
@@ -173,9 +182,10 @@ io.on("connection", function(socket) {
           var currentData=await db.getCurrentData(NodeID);
           currentData.StatusConnect=0;
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
-          
+
           //get collected data today
-          var d = new Date;
+          var d=new Date();
+          d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
           var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
 
           var dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear;
@@ -191,7 +201,7 @@ io.on("connection", function(socket) {
           //data everyday average
           /* dataChartEveryDay
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
           result=await db.listMonthsYears(NodeID);
           io.sockets.in(socket.Phong).emit("server-send-init-everyDay", result);
@@ -205,7 +215,7 @@ io.on("connection", function(socket) {
           //data everymonth average
           /* dataChartEveryMonth
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
           result=await db.listYears(NodeID);
           io.sockets.in(socket.Phong).emit("server-send-init-everyMonth", result);
@@ -219,8 +229,9 @@ io.on("connection", function(socket) {
           //data everyYear average
           /* dataChartEveryYear
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
+
           result=await db.getCollectedDataEveryYear(NodeID);
           dataChartEveryYear=result;
           io.sockets.in(socket.Phong).emit("server-send-init-chart", {dataChartCurrent: dataChartCurrent, dataChartEveryDay: dataChartEveryDay, dataChartEveryMonth: dataChartEveryMonth, dataChartEveryYear: dataChartEveryYear});
@@ -253,7 +264,8 @@ io.on("connection", function(socket) {
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
           
           //get collected data today
-          var d = new Date;
+          var d=new Date();
+          d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
           var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
 
           var dataChartCurrent, dataChartEveryDay, dataChartEveryMonth, dataChartEveryYear;
@@ -269,7 +281,7 @@ io.on("connection", function(socket) {
           //data everyday average
           /* dataChartEveryDay
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
           result=await db.listMonthsYears(NodeID);
           io.sockets.in(socket.Phong).emit("server-send-init-everyDay", result);
@@ -283,7 +295,7 @@ io.on("connection", function(socket) {
           //data everymonth average
           /* dataChartEveryMonth
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
           result=await db.listYears(NodeID);
           io.sockets.in(socket.Phong).emit("server-send-init-everyMonth", result);
@@ -297,7 +309,7 @@ io.on("connection", function(socket) {
           //data everyYear average
           /* dataChartEveryYear
             =false if there is no data found
-            =[{TimeGet: ..., Pac: ...}, ....]
+            =[{TimeGet: ..., EToday: ...}, ....]
           */
           result=await db.getCollectedDataEveryYear(NodeID);
           dataChartEveryYear=result;
@@ -311,15 +323,16 @@ io.on("connection", function(socket) {
 
     socket.on("esp_send_data",function(data) {
         if(socket.auth) {
-            var d = new Date;
+            var d=new Date();
+            d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
+            var dformat = [d.getFullYear(),
+                           d.getMonth()+1,
+                           d.getDate()].join('-')+' '+
+                          [d.getHours(),
+                           d.getMinutes(),
+                           d.getSeconds()].join(':');
             var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
-            var dformat =
-              [d.getFullYear(),
-               d.getMonth()+1,
-               d.getDate()].join('-')+' '+
-              [d.getHours(),
-               d.getMinutes(),
-               d.getSeconds()].join(':');
+            
             var newData = {
                 ID: data.username.toUpperCase(),
                 TimeGet: dformat,
@@ -343,16 +356,23 @@ io.on("connection", function(socket) {
               insert_send();
               async function insert_send() {
                 try {
+                  result = await db.getLatestEToday(jsonDate, newData.NodeID);
+                  if (result) {
+                    if (result.EToday < newData.EToday) {
+                      db.updateEToday(result.IndexData, newData);
+                    }
+                  } else {
+                    db.insertStatistics (newData.ID, newData.NodeID, newData);
+                  }
                   await db.insertCollectedData(newData.ID, newData.NodeID, newData);
                   result = await db.getCollectedDataSpecDay(jsonDate, newData.NodeID);
                   if(result) {
                     io.sockets.in(newData.NodeID).emit("server-send-collected-today", result[result.length-1]);
                   }
                   else {
-                    console.log("result that bai");
                     io.sockets.in(newData.NodeID).emit("server-send-collected-today", false);
                   }
-                } catch(err) {throw err;}
+                } catch(err) {}
               }
             }
         } else {
@@ -367,7 +387,7 @@ io.on("connection", function(socket) {
       //data everyday average
       /* dataChartEveryDay
         =false if there is no data found
-        =[{TimeGet: ..., Pac: ...}, ....]
+        =[{TimeGet: ..., EToday: ...}, ....]
       */
       getEveryDay();
       async function getEveryDay() {
@@ -385,7 +405,7 @@ io.on("connection", function(socket) {
       //data everymonth average
       /* dataChartEveryMonth
         =false if there is no data found
-        =[{TimeGet: ..., Pac: ...}, ....]
+        =[{TimeGet: ..., EToday: ...}, ....]
       */
       getEveryDay();
       async function getEveryDay() {
@@ -396,6 +416,8 @@ io.on("connection", function(socket) {
       };
     });
 });
+
+app.use(flash());
 
 app.get('/login', function(req, res, next) {
     if (req.isAuthenticated()) {
@@ -501,53 +523,52 @@ app.get('/editProfile', function(req, res) {
 });
 
 app.post('/androidReqData', function(req, res) {
-  /*console.log(req.body);
-  res.send({mess: "hello"});*/
   if (!req.body || !req.body.user || !req.body.day || !req.body.month || !req.body.year) return res.sendStatus(400);
   resData();
   async function resData() {
     try {
       var NodeID=JSON.parse(req.body.user).NodeID;
-      var d = new Date;
+      var d=new Date();
+      d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
       var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
-      var resPacDay, resPacMonth, resPacYear, resPacYears;
+      var resETodayDay, resETodayMonth, resETodayYear, resETodayYears;
 
-      if(req.body.day!=="now") {
-        resPacDay = await db.getCollectedDataSpecDay(JSON.parse(req.body.day), NodeID);
+      if(req.body.day!=="now" && req.body.day!=="disable") {
+        resETodayDay = await db.getStatisticsDataSpecDay(JSON.parse(req.body.day), NodeID);
       } else if(req.body.day==="disable") {
-        resPacDay = false;
+        resETodayDay = false;
       } else {
-        resPacDay = await db.getCollectedDataSpecDay(jsonDate, NodeID);
+        resETodayDay = await db.getStatisticsDataSpecDay(jsonDate, NodeID);
       }
 
 
-      if(req.body.month!=="now") {
-        resPacMonth = await db.getCollectedDataEveryDay(JSON.parse(req.body.month), NodeID);
+      if(req.body.month!=="now" && req.body.month!=="disable") {
+        resETodayMonth = await db.getCollectedDataEveryDay(JSON.parse(req.body.month), NodeID);
       } else if(req.body.month==="disable") {
-        resPacDay = false;
+        resETodayMonth = false;
       } else {
-        resPacMonth = await db.getCollectedDataEveryDay(jsonDate, NodeID);
+        resETodayMonth = await db.getCollectedDataEveryDay(jsonDate, NodeID);
       }
 
-      if(req.body.year!=="now") {
-        resPacYear = await db.getCollectedDataEveryMonth({year: req.body.year}, NodeID);
+      if(req.body.year!=="now" && req.body.year!=="disable") {
+        resETodayYear = await db.getCollectedDataEveryMonth({year: req.body.year}, NodeID);
       } else if(req.body.year==="disable") {
-        resPacDay = false;
+        resETodayYear = false;
       } else {
-        resPacYear = await db.getCollectedDataEveryMonth(jsonDate, NodeID);
+        resETodayYear = await db.getCollectedDataEveryMonth(jsonDate, NodeID);
       }
 
       if(req.body.years==="disable") {
-        resPacDay = false;
+        resETodayYears = false;
       } else {
-        resPacYears = await db.getCollectedDataEveryYear(NodeID);
+        resETodayYears = await db.getCollectedDataEveryYear(NodeID);
       }
 
       var current = await db.getCurrentData(NodeID);
-
-      res.send({collected: {day: resPacDay, month: resPacMonth, year: resPacYear, years: resPacYears}, current: current});
+      //console.log({collected: {day: resETodayDay, month: resETodayMonth, year: resETodayYear, years: resETodayYears}, current: current});
+      res.send({collected: {day: resETodayDay, month: resETodayMonth, year: resETodayYear, years: resETodayYears}, current: current});
     } catch (err) {throw err;}
   }
 });
 
-server.listen(3000);
+server.listen(process.env.PORT || port);

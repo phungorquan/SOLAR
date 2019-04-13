@@ -1,7 +1,18 @@
 create table Users (
 	ID char(30) primary key,
 	Pass varbinary(50) not null,
-	NumNode smallint not null
+	Company varchar(50),
+	Email varchar(50),
+	FirstName varchar(30),
+	LastName varchar(30),
+	Address varchar(50), 
+	City varchar(30), 
+	About varchar(500), 
+	LinkInfo varchar(100), 
+	Slogan varchar(500), 
+	Country varchar(50), 
+	Avatar varchar(500), 
+	CoverAvatar varchar(500)
 );
 create table Nodes (
 	ID char(30) not null,
@@ -28,15 +39,11 @@ create table CurrentData (
 	CONSTRAINT FK_Current_Users FOREIGN KEY (ID) REFERENCES Users (ID)
 );
 create table CollectedData (
-	IndexData int(11) not null,
+	IndexData int(50) primary key,
 	ID char(30) not null,
 	TimeGet datetime,
-	PV_Vol float,
-	PV_Amp float,
-	Bus float,
 	Pac float,
 	NodeID char(50) not null,
-	CONSTRAINT PK_Collected PRIMARY KEY (ID, NodeID, IndexData),
 	CONSTRAINT FK_Collected_Nodes FOREIGN KEY (NodeID) REFERENCES Nodes (NodeID),
 	CONSTRAINT FK_Collected_Users FOREIGN KEY (ID) REFERENCES Users (ID)
 );
