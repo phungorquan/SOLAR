@@ -181,10 +181,20 @@ io.on("connection", function(socket) {
           //get-send current data
           var currentData=await db.getCurrentData(NodeID);
           currentData.StatusConnect=0;
+
+          var d=new Date(currentData.TimeGet);
+          var dformat = [d.getFullYear(),
+                         d.getMonth()+1,
+                         d.getDate()].join('-')+' '+
+                        [d.getHours(),
+                         d.getMinutes(),
+                         d.getSeconds()].join(':');
+          currentData.TimeGet=dformat;
+
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
 
           //get collected data today
-          var d=new Date();
+          d=new Date();
           d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
           var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
 
@@ -261,10 +271,19 @@ io.on("connection", function(socket) {
           //get-send current data
           var currentData=await db.getCurrentData(NodeID);
           currentData.StatusConnect=0;
+
+          var d=new Date(currentData.TimeGet);
+          var dformat = [d.getFullYear(),
+                         d.getMonth()+1,
+                         d.getDate()].join('-')+' '+
+                        [d.getHours(),
+                         d.getMinutes(),
+                         d.getSeconds()].join(':');
+          currentData.TimeGet=dformat;
           io.sockets.in(socket.Phong).emit("server-send-current-data", currentData);
           
           //get collected data today
-          var d=new Date();
+          d=new Date();
           d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 + 7*3600*1000 );
           var jsonDate = {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
 

@@ -43,6 +43,9 @@ void handleRoot() {
 }
 
 void parseJson(void) {
+  DynamicJsonBuffer jsonBuffer;
+  String input = "{\"PV_Vol\": 0, \"PV_Amp\": 0, \"Bus\": 0, \"AC_Vol\": 0, \"AC_Hz\": 0, \"Tem\": 0, \"Pac\": 0, \"EToday\": 0, \"EAll\": 0, \"StatusConnect\": 1}";
+  JsonObject& root = jsonBuffer.parseObject(input);
   root["PV_Vol"]=random(300);
   root["PV_Amp"]=random(300);
   root["Bus"]=random(300);

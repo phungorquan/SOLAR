@@ -1,0 +1,6 @@
+#include <EEPROM.h>
+EEPROM.begin(512);
+uint8_t val = EEPROM.read(0);
+Serial.println(val);
+EEPROM.write(0, ++val);
+EEPROM.commit();

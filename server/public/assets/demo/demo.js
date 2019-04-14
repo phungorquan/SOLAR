@@ -696,8 +696,10 @@ $(document).ready(function() {
   /********************************update current data*****************************/
   socket.on("server-send-current-data", function(data) {
     if (data) {
+      var dLocal = new Date();
       var d = new Date(data.TimeGet);
-      d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000);
+      d.setTime(d.getTime() - dLocal.getTimezoneOffset()*60*1000 - 7*3600*1000);
+      //console.log((d.getHours()).toString()+':'+d.getMinutes().toString()+':'+d.getSeconds().toString());
       $("#TimeGet").html((d.getHours()).toString()+':'+d.getMinutes().toString()+':'+d.getSeconds().toString());
       $("#PV_Vol").html(data.PV_Vol);
       $("#PV_Amp").html(data.PV_Amp);
