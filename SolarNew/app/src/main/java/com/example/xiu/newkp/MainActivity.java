@@ -36,7 +36,7 @@ import io.socket.client.Socket;
 public class MainActivity extends AppCompatActivity{
     TextView tvLog,tvReg;
     EditText edtID,edtPASS;
-    Socket mSocket;
+    //Socket mSocket;
     String urlpostdata = "http://192.168.137.1:3000/login";
     //"http://lee-ceec.000webhostapp.com/solar/Android/Log.php";//http://192.168.1.3:1234/SOLAR/Log.php";//"http://192.168.1.7:1234/SOLAR/Log.php";
 
@@ -59,13 +59,13 @@ public class MainActivity extends AppCompatActivity{
 
         g.CheckWIFI(MainActivity.this);     // Check wifi is on
 
-        try {
-            //mSocket = IO.socket("http://192.168.1.20:3000/");
-            mSocket = IO.socket("http://192.168.137.1:3000");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        mSocket.connect();
+//        try {
+//            //mSocket = IO.socket("http://192.168.1.20:3000/");
+//            mSocket = IO.socket("http://192.168.137.1:3000");
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        mSocket.connect();
 
 
         tvLog.setOnClickListener(new View.OnClickListener() {
@@ -93,54 +93,13 @@ public class MainActivity extends AppCompatActivity{
                 if(g.CheckWIFI(MainActivity.this) == true)
                 {
                     //Intent intent = new Intent(MainActivity.this,RegisterAccount.class);
-                    Intent intent = new Intent(MainActivity.this,Showdata.class);
+                    Intent intent = new Intent(MainActivity.this,Calendar.class);
                     startActivity(intent);
                 }
             }
         });
 
     }
-
-        public void POSTTOSOCKET()
-        {
-            //mSocket.on("Server_Send",onreceive);
-            // mSocket.emit("Client_Login_Send","huhu");
-
-            tvLog.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String id = edtID.getText().toString();
-                    String pass = edtPASS.getText().toString();
-
-                    if (id.isEmpty() || pass.isEmpty()) {
-                        // Nếu chưa nhập gì thì sẽ báo là Nhập đủ đi
-                        Toast.makeText(MainActivity.this, "Please input", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-
-                        mSocket.emit("text","abcdef");
-                        Toast.makeText(MainActivity.this, "Sent", Toast.LENGTH_SHORT).show();
-//                        JSONObject jsonObject = new JSONObject();
-//                        try {
-//                            jsonObject.put("id" , id );
-//                            jsonObject.put("pass" ,  pass);
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-
-                        // mSocket.on("Server_Login_Send",onreceive);
-
-                    }
-
-                }
-            });
-
-
-        }
-
 
         public void Login (String url)
     {

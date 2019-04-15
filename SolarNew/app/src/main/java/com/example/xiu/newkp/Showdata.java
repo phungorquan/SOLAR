@@ -63,79 +63,17 @@ public class Showdata extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Y = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-                Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
-                String M = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
-                Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
+                //String Y = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
+                //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
+                //String M = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+                //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
 
+                Intent intent = new Intent(Showdata.this,Calendar.class);
+                startActivity(intent);
             }
         });
 
 
-
-
-        //DataArr.add("1");
-
-//        JSONObject data = new JSONObject();
-//        try {
-//
-//            JSONObject userdata = new JSONObject();
-//            userdata.put("NodeID", "CEEC_0");
-//
-//
-//            JSONObject daydata = new JSONObject();
-//            daydata.put("day", 14);
-//            daydata.put("month", 3);
-//            daydata.put("year", 2019);
-//
-//            JSONObject monthdata = new JSONObject();
-//            monthdata.put("month", 3);
-//            monthdata.put("year", 2019);
-//
-//            JSONObject combine = new JSONObject();
-//
-//
-//            combine.put("user", userdata);
-//            combine.put("day", daydata);
-//            combine.put("month", "{\"NodeID\":\"CEEC_0\"}");
-//            //combine.put("year", 2019);
-//
-//
-//
-//
-//
-//            //data.put( null, combine);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        try {
-//            JSONObject parentObject = new JSONObject(json_string);
-//            //JSONObject current = parentObject.getJSONObject("current");
-//            //Log.d("current", String.valueOf(current));
-//
-//            DataArr.add(parentObject.getString("Bus"));
-//            Log.d("current", String.valueOf(parentObject));
-////            JSONArray day = collected.getJSONArray("day");
-////
-////
-////            for(int i=0;i<day.length();i++)
-////            {
-////                JSONObject daydata = day.getJSONObject(i);
-////                DataArr.add(daydata.getString("Pac"));
-////                DataArr.add(daydata.getString("TimeGet"));
-////                //items.add(object.getString("company"));
-////            }
-//
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-
-        //GETGET(urlgetdata, data);
         Getdata(urlgetdata);
 
         // final Bundle bd = getIntent().getExtras();
@@ -221,60 +159,51 @@ public class Showdata extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject parentObject = new JSONObject(response);
-                                JSONObject collectedobject = parentObject.getJSONObject("collected");
+                               // JSONObject collectedobject = parentObject.getJSONObject("collected");
 
-                                //JSONObject currentobject = parentObject.getJSONObject("current");
+                                JSONObject currentobject = parentObject.getJSONObject("current");
                                // Log.d("collect", String.valueOf(collected));
 
-                                JSONArray month = collectedobject.getJSONArray("years"); // chua co array nen k xai duoc
+                                //JSONArray month = collectedobject.getJSONArray("years"); // chua co array nen k xai duoc
                                             //Log.d("month", String.valueOf(month));
 
-//                                String[] currentTittle = {"ID","Time Get","PV_Vol","PV_Amp","Bus","AC_Vol","AC_Hz",
-//                                        "Temperature","Pac","EToday","EAll","Status Connection","NodeID"};
-//
-//
-//                                String[] infoArray = {
-//                                        currentobject.getString("ID"),
-//                                        currentobject.getString("TimeGet"),
-//                                        currentobject.getString("PV_Vol"),
-//                                        currentobject.getString("PV_Amp"),
-//                                        currentobject.getString("Bus"),
-//                                        currentobject.getString("AC_Vol"),
-//                                        currentobject.getString("AC_Hz"),
-//                                        currentobject.getString("Tem"),
-//                                        currentobject.getString("Pac"),
-//                                        currentobject.getString("EToday"),
-//                                        currentobject.getString("EAll"),
-//                                        currentobject.getString("StatusConnect"),
-//                                        currentobject.getString("NodeID")
-//                                };
-//
-//                                XiuListAdapter currentShow = new XiuListAdapter(Showdata.this, currentTittle, infoArray);
-//                                DataView.setAdapter(currentShow);
+                                String[] currentTittle = {"ID","Time Get","PV_Vol","PV_Amp","Bus","AC_Vol","AC_Hz",
+                                        "Temperature","Pac","EToday","EAll","Status Connection","NodeID"};
+
+
+                                String[] infoArray = {
+                                        currentobject.getString("ID"),
+                                        currentobject.getString("TimeGet"),
+                                        currentobject.getString("PV_Vol"),
+                                        currentobject.getString("PV_Amp"),
+                                        currentobject.getString("Bus"),
+                                        currentobject.getString("AC_Vol"),
+                                        currentobject.getString("AC_Hz"),
+                                        currentobject.getString("Tem"),
+                                        currentobject.getString("Pac"),
+                                        currentobject.getString("EToday"),
+                                        currentobject.getString("EAll"),
+                                        currentobject.getString("StatusConnect"),
+                                        currentobject.getString("NodeID")
+                                };
+
+                                XiuListAdapter currentShow = new XiuListAdapter(Showdata.this, currentTittle, infoArray);
+                                DataView.setAdapter(currentShow);
 
 
 
                                 //DataArr = new ArrayList<String>();
 
 
-                                for(int i=0;i<month.length();i++)
-                                 {
-                                    JSONObject monthdata = month.getJSONObject(i);
-                                    //DataArr.add(monthdata.getString("Pac"));
-                                    //DataArr.add(monthdata.getString("TimeGet"));
-
-                                     Toast.makeText(Showdata.this, monthdata.getString("Pac"), Toast.LENGTH_LONG).show();
-                                     Toast.makeText(Showdata.this, monthdata.getString("TimeGet"), Toast.LENGTH_LONG).show();
-                                }
-
-
-//                                ArrayAdapter adapter = new ArrayAdapter(
-//                                        Showdata.this,
-//                                        android.R.layout.simple_list_item_1,android.R.id.text1,
-//                                        values
-//                                );
-//                                DataView.setAdapter(adapter);
-
+//                                for(int i=0;i<month.length();i++)
+//                                 {
+//                                    JSONObject monthdata = month.getJSONObject(i);
+//                                    //DataArr.add(monthdata.getString("Pac"));
+//                                    //DataArr.add(monthdata.getString("TimeGet"));
+//
+//                                     Toast.makeText(Showdata.this, monthdata.getString("Pac"), Toast.LENGTH_LONG).show();
+//                                     Toast.makeText(Showdata.this, monthdata.getString("TimeGet"), Toast.LENGTH_LONG).show();
+//                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -299,6 +228,8 @@ public class Showdata extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> send = new HashMap<>();
+
+
 
                     String user = "{\"NodeID\":\"CEEC_0\"}";
                     String day = "{\"day\":14, \"month\": 3, \"year\": 2019}";
