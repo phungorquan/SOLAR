@@ -541,6 +541,26 @@ app.get('/editProfile', function(req, res) {
     }
 });
 
+app.post('/androidLogin', function(req,res) {
+  console.log(req.body);
+	if (req.body && req.body.username && req.body.password) {
+		loginAndroid();
+	    async function loginAndroid() {
+	        try{
+            var result= await db.checkLogin(req.body.username,req.body.password);
+            if (result == false) {
+              res.send("FAIL");
+            }
+            else {
+              result = await db.listNodes(req.body.username);
+              res.send(result);
+            }
+	        }
+	        catch(e){throw (e);}
+	    }
+	}
+});
+
 app.post('/androidReqData', function(req, res) {
   if (!req.body || !req.body.user || !req.body.day || !req.body.month || !req.body.year) return res.sendStatus(400);
   resData();
