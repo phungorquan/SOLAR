@@ -28,18 +28,15 @@ exports.checkUsername = function (username) {
 			if(rows.length>=1) {
 				resolve(true);
 			} else {
-				reject(false);
+				resolve(false);
 			}
 		});
 	});
 }
 
-exports.insertUser = function (username, pass) {
-	return new Promise (function (resolve, reject) {
-		pool.query("insert into Users (ID, Pass, NumNode) values (upper('"+username+"'), AES_ENCRYPT('"+pass+"', 'qwerty123456'), 0);", function(err, rows, fields) { 
-			if (err) reject(err); 
-			resolve(true);
-		});
+exports.insertUser = function (username, pass, email) {
+	pool.query("insert into Users (ID, Pass, Email) values (upper('"+username+"'), AES_ENCRYPT('"+pass+"', 'qwerty123456'), '"+email+"');", function(err, rows, fields) { 
+		if (err) throw err;
 	});
 }
 

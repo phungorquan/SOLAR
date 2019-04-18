@@ -524,6 +524,26 @@ app.get('/notifications', function(req, res) {
     }
 });
 
+app.get('/signIn', function(req, res) {
+    res.render("signIn");
+});
+
+app.post('/signIn', function(req, res) {
+    if (req.body.username && req.body.password && req.body.email) {
+      trySignIn();
+      async function trySignIn() {
+        result = await db.checkUsername(req.body.username);
+        if (!result) { //user ko ton tai
+          db.insertUser(req.body.username, req.body.password, req.body.email);
+          res.redirect('/login');
+        }
+        else {
+          res.send("user da ton tai");
+        }
+      }
+    }
+});
+
 app.get('/editProfile', function(req, res) {
     if (req.isAuthenticated()) {
         update();

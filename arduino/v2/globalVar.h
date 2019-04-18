@@ -12,8 +12,8 @@ char Pass[]="ce.uit.edu.vn";
 //=====================================================================
 //                              wifi and socket
 //=====================================================================
-const char* ssid = "Baby I'm unreal";
-const char* password = "417417417";
+const char* ssid = "UIT_Guest";
+const char* password = "1denmuoi1";
      
 const char* Host_Socket = "ceecsolarsystem.herokuapp.com";
 unsigned int Port_Socket = 80;
