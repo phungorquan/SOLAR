@@ -1,11 +1,13 @@
 package com.example.xiu.newkp;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -45,6 +47,7 @@ public class Showdata extends AppCompatActivity {
     ListView DataView;
     ArrayList<String> DataArr;
 
+
     //String abc="Toilaai";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class Showdata extends AppCompatActivity {
 
         final Global g = (Global) getApplication();
 
+        //Log.d("Getout Showdata",g.getNode_ID());
 
         btn = (Button) findViewById(R.id.btnhis);
         DataView = (ListView) findViewById(R.id.lstview);
@@ -67,14 +71,38 @@ public class Showdata extends AppCompatActivity {
                 //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
                 //String M = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
                 //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(Showdata.this,Calendar.class);
-                startActivity(intent);
+                if(g.CheckWIFI(Showdata.this) == true) {
+                    Intent intent = new Intent(Showdata.this, Calendar.class);
+                    startActivity(intent);
+                }
             }
         });
 
-
         Getdata(urlgetdata);
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(9000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Getdata(urlgetdata);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        t.start();
+
+
+
+
+       // Getdata(urlgetdata);
 
         // final Bundle bd = getIntent().getExtras();
         // final String[] Getaccount = {null};
@@ -167,8 +195,10 @@ public class Showdata extends AppCompatActivity {
                                 //JSONArray month = collectedobject.getJSONArray("years"); // chua co array nen k xai duoc
                                             //Log.d("month", String.valueOf(month));
 
-                                String[] currentTittle = {"ID","Time Get","PV_Vol","PV_Amp","Bus","AC_Vol","AC_Hz",
-                                        "Temperature","Pac","EToday","EAll","Status Connection","NodeID"};
+                                String[] currentTittle = {"Tài khoản","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
+                                        "Điện áp AC (Volt)","Tần số điện ấp AC (Hz)",
+                                        "Nhiệt độ (độ C)","Năng lượng tiêu thụ (W)","Năng lượng thu được trong ngày (kW)",
+                                        "Năng lượng thu được toàn bộ (kW)","Trạng thái kết nối","Mã số mạng lưới"};
 
 
                                 String[] infoArray = {
@@ -215,7 +245,7 @@ public class Showdata extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(Showdata.this, "ERROR", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Showdata.this, "Lỗi", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -229,9 +259,10 @@ public class Showdata extends AppCompatActivity {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> send = new HashMap<>();
 
-
-
-                    String user = "{\"NodeID\":\"CEEC_0\"}";
+                    Global g = (Global) getApplication();
+                    String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
+                    Log.d("Showdata_usercheck",user);
+                    //String user = "{\"NodeID\":\"CEEC_0\"}";
                     String day = "{\"day\":14, \"month\": 3, \"year\": 2019}";
                     String month = "{\"month\": 3, \"year\": 2019}";
                     String year = "2019";

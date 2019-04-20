@@ -19,8 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:label="Login">
+            android:name=".ModeSelect"
+            android:label="Selection Data Access">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,9 +32,24 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".Showdata"
+            android:parentActivityName=".Node_List" />
+        <activity
+            android:name=".Calendar"
+            android:parentActivityName=".Showdata" />
+        <activity
+            android:name=".CreateNode"
+            android:parentActivityName=".Node_List" />
+        <activity
+            android:name=".Node_List"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".Calendar"
-            android:parentActivityName=".Showdata"/>
+        <activity
+            android:name=".MainActivity"
+            android:parentActivityName=".ModeSelect"/>
+        <activity
+            android:name=".NearShowData"
+            android:parentActivityName=".ModeSelect">
+
+        </activity>
     </application>
 
 </manifest>

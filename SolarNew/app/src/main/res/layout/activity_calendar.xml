@@ -10,7 +10,7 @@
     <CalendarView
         android:id="@+id/cld"
         android:layout_width="0dp"
-        android:layout_height="302dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/txvEToday"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
     <RadioGroup
         android:id="@+id/rDG"
         android:layout_width="0dp"
-        android:layout_height="213dp"
+        android:layout_height="0dp"
         android:layout_marginStart="2dp"
         android:layout_marginLeft="2dp"
         android:layout_marginEnd="5dp"
@@ -39,41 +39,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:buttonTint="@color/colorPrimary"
             android:checked="true"
-            android:text="Today"
-            android:buttonTint="@color/colorPrimary" />
+            android:text="Today" />
 
         <RadioButton
             android:id="@+id/rMY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Days"
-            android:buttonTint="@color/colorPrimary" />
+            android:buttonTint="@color/colorPrimary"
+            android:text="Days" />
 
         <RadioButton
             android:id="@+id/rY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Months"
-            android:buttonTint="@color/colorPrimary" />
+            android:buttonTint="@color/colorPrimary"
+            android:text="Months" />
 
         <RadioButton
             android:id="@+id/rYs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Years"
-            android:buttonTint="@color/colorPrimary" />
+            android:buttonTint="@color/colorPrimary"
+            android:text="Years" />
 
 
     </RadioGroup>
 
     <ListView
         android:id="@+id/lstviewwithDate"
-        android:layout_width="224dp"
-        android:layout_height="170dp"
+        android:layout_width="0dp"
+        android:layout_height="168dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,7 @@
         android:gravity="center"
         android:text="AVG - EToday"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="24sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cld" />

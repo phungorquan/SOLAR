@@ -46,6 +46,7 @@ public class Calendar extends AppCompatActivity {
     String Glob_Year = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,7 @@ public class Calendar extends AppCompatActivity {
         rd4 = (RadioButton) findViewById(R.id.rYs);
 
         txv = (TextView) findViewById(R.id.txvEToday);
-        txv.setText("AVG - EToday");
+        txv.setText("Giá trị điện trung bình");
 
         GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
 
@@ -94,16 +95,30 @@ public class Calendar extends AppCompatActivity {
                         GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
                         break;
                 }
+
+
+//                Thread t = new Thread() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            while (!isInterrupted()) {
+//                                Thread.sleep(9000);
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
+//                                    }
+//                                });
+//                            }
+//                        } catch (InterruptedException e) {
+//                        }
+//                    }
+//                };
+//                t.start();
+
             }
         });
 
-
-
-
-
-
-
-       // final Global g = (Global)getApplication();
 
        // final Bundle bd = getIntent().getExtras();
        /// final String[] Getaccount = {null};
@@ -118,9 +133,12 @@ public class Calendar extends AppCompatActivity {
                 // {
                 //      Getaccount[0] = bd.getString("Getaccount");
                 //  }
+
                 Glob_Day = String.valueOf(dayOfMonth);
                 Glob_Month = String.valueOf(month+1);
                 Glob_Year = String.valueOf(year);
+
+
 
                 GetdatawithDate(urlgetdata,year,month + 1,dayOfMonth);
 
@@ -141,25 +159,34 @@ public class Calendar extends AppCompatActivity {
                         try {
                             JSONObject parentObject = new JSONObject(response);
                              JSONObject collectedobject = parentObject.getJSONObject("collected");
-                             Log.d("collect", String.valueOf(collectedobject));
+                             //Log.d("collect", String.valueOf(collectedobject));
 
                             if(CheckBoxSelect == 1)
                             {
+                                String[] Nulltittle = {"Không có dữ liệu"};
+                                String[] NullInfo = {"Không có dữ liệu"};
+                                XiuListAdapter ShownullFirst = new XiuListAdapter(Calendar.this, Nulltittle, NullInfo);
+                                DataView.setAdapter(ShownullFirst);
 
-                                     JSONObject EToday_Today = collectedobject.getJSONObject("day"); // chua co array nen k xai duoc
+                                JSONObject EToday_Today = collectedobject.getJSONObject("day"); // chua co array nen k xai duoc
 
-                                     String[] currentTittle =  {EToday_Today.getString("TimeGet")};
-                                     String[] infoArray = {
-                                             EToday_Today.getString("EToday"),
-                                     };
-                                      XiuListAdapter currentShow = new XiuListAdapter(Calendar.this, currentTittle, infoArray);
-                                      DataView.setAdapter(currentShow);
+                                String[] currentTittle =  {EToday_Today.getString("TimeGet")};
+                                String[] infoArray = {
+                                        EToday_Today.getString("EToday"),
+                                };
+                                XiuListAdapter currentShow = new XiuListAdapter(Calendar.this, currentTittle, infoArray);
+                                DataView.setAdapter(currentShow);
 
                             }
 
 
                             else if(CheckBoxSelect == 2)
                             {
+
+                                String[] Nulltittle = {"Không có dữ liệu"};
+                                String[] NullInfo = {"Không có dữ liệu"};
+                                XiuListAdapter ShownullFirst = new XiuListAdapter(Calendar.this, Nulltittle, NullInfo);
+                                DataView.setAdapter(ShownullFirst);
 
                                 JSONArray EToday_Days = collectedobject.getJSONArray("month");
 
@@ -181,6 +208,10 @@ public class Calendar extends AppCompatActivity {
 
                             else if(CheckBoxSelect == 3)
                             {
+                                String[] Nulltittle = {"Không có dữ liệu"};
+                                String[] NullInfo = {"Không có dữ liệu"};
+                                XiuListAdapter ShownullFirst = new XiuListAdapter(Calendar.this, Nulltittle, NullInfo);
+                                DataView.setAdapter(ShownullFirst);
 
                                 JSONArray EToday_Months = collectedobject.getJSONArray("year");
 
@@ -203,6 +234,11 @@ public class Calendar extends AppCompatActivity {
 
                             else if(CheckBoxSelect == 4)
                             {
+                                String[] Nulltittle = {"Không có dữ liệu"};
+                                String[] NullInfo = {"Không có dữ liệu"};
+                                XiuListAdapter ShownullFirst = new XiuListAdapter(Calendar.this, Nulltittle, NullInfo);
+                                DataView.setAdapter(ShownullFirst);
+
                                 JSONArray EToday_Years = collectedobject.getJSONArray("years");
 
                                 String[] currentTittle = new String[EToday_Years.length()];
@@ -212,7 +248,7 @@ public class Calendar extends AppCompatActivity {
 
                                     JSONObject Object_Years = EToday_Years.getJSONObject(years_index);
 
-                                    currentTittle[years_index] = "AVG-EToday";
+                                    currentTittle[years_index] = Object_Years.getString("TimeGet");
                                     infoArray[years_index] = Object_Years.getString("EToday");
                                 }
 
@@ -231,7 +267,7 @@ public class Calendar extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Calendar.this, "ERROR", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Calendar.this, "Lỗi", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -245,7 +281,10 @@ public class Calendar extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> send = new HashMap<>();
 
-                String user = "{\"NodeID\":\"CEEC_0\"}";
+                Global g = (Global) getApplication();
+
+                String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
+                //String user = "{\"NodeID\":\"CEEC_0\"}";
                 String today_send = null;
                 String days_send = null;
                 String months_send = null;

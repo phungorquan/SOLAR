@@ -21,7 +21,7 @@
         android:id="@+id/edtID"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:hint="ID"
+        android:hint="Tài Khoản"
         android:inputType="textPersonName" />
 
     <EditText
@@ -29,7 +29,7 @@
         android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Password"
+        android:hint="Mật Khẩu"
         android:inputType="textPassword" />
 
     <TextView

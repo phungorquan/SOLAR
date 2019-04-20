@@ -4,27 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context=".NearShowData">
 
-    <Button
-        android:id="@+id/btnhis"
+    <TextView
+        android:id="@+id/txvNearDataTittle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:text="LỊCH SỬ"
-        app:layout_constraintBottom_toTopOf="@+id/lstview"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="16dp"
+        android:text="Dữ liệu thu được hiện tại"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/txvNearData"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ListView
-        android:id="@+id/lstview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="2dp"
+    <TextView
+        android:id="@+id/txvNearData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="372dp"
+        android:text="TextView"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnhis" />
-
+        app:layout_constraintTop_toBottomOf="@+id/txvNearDataTittle" />
 </android.support.constraint.ConstraintLayout>

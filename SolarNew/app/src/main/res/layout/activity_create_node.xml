@@ -12,35 +12,35 @@
 
 
     <EditText
-        android:id="@+id/edtID"
+        android:id="@+id/edtNameNode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Tên Đăng Nhập"
+        android:hint="Tên mạng lưới"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/edtPASS"
+        android:id="@+id/edtLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Mật Khẩu (4-16 ký tự)"
+        android:hint="Vị trí mạng lưới trên bản đồ"
         android:inputType="textPassword" />
 
     <EditText
-        android:id="@+id/edtPASSCON"
+        android:id="@+id/edtInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Nhập Lại Mật Khẩu"
+        android:hint="Thông tin khác"
         android:inputType="textPassword" />
 
     <TextView
-        android:id="@+id/txvReg"
+        android:id="@+id/txvCreNL"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:gravity="center"
-        android:text="ĐĂNG KÝ"
-        android:textSize="18sp" />
+        android:text="Tạo"
+        android:textSize="24sp" />
 
 </LinearLayout>

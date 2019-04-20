@@ -10,6 +10,8 @@ public class Global extends Application {
 
 
     private String data;
+    private String Node_ID;
+    private String JSonRes;
 
     public String getData(){
         return this.data;
@@ -19,12 +21,20 @@ public class Global extends Application {
         this.data=d;
     }
 
+    public String getNode_ID() {return this.Node_ID;}
+    public void setNode_ID(String nid) {this.Node_ID = nid;}
+
+    public String getResponseJsonNodeList() {return this.JSonRes;}
+    public void setResponseJsonNodeList(String jsonres) {this.JSonRes = jsonres;}
+
+
+
     public boolean CheckWIFI(Context context)
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (!(networkInfo != null && networkInfo.isConnected())) {
-            Toast.makeText(context,"WIFI is DISCONNECTED", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
             return false;
         }
 

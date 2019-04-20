@@ -41,7 +41,7 @@ public class RegisterAccount extends AppCompatActivity {
         edtPASS = (EditText)findViewById(R.id.edtPASS);
         edtPASSCON = (EditText)findViewById(R.id.edtPASSCON);
         tvReg = (TextView) findViewById(R.id.txvReg);
-        tvReg.setText("REGISTER");
+        tvReg.setText("ĐĂNG KÝ");
 
         final Global g = (Global)getApplication();
 
@@ -57,12 +57,12 @@ public class RegisterAccount extends AppCompatActivity {
                 if(g.CheckWIFI(RegisterAccount.this) == true)
                 {
                     if (id.isEmpty() || pass.isEmpty()) {
-                        Toast.makeText(RegisterAccount.this, "Nhập đủ đi", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterAccount.this, "Vui lòng nhập đủ thông tin!", Toast.LENGTH_SHORT).show();
                     } else {
                         if (pass.equals(passconfirm))
                             Register(urlpostdata);
                         else
-                            Toast.makeText(RegisterAccount.this, "Password khong giong nhau", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterAccount.this, "Mật khẩu xác nhận không đúng", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -80,19 +80,19 @@ public class RegisterAccount extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         if(response.trim().equals("2")) {
-                            Toast.makeText(RegisterAccount.this, "Successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterAccount.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterAccount.this,MainActivity.class);
                             startActivity(intent);
                         }
                         else if(response.trim().equals("1"))
                         {
-                            Toast.makeText(RegisterAccount.this,"Account is exist", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterAccount.this,"Tài khoản đã tồn tại", Toast.LENGTH_SHORT).show();
                             //Log.d("AAA","ERROR\n" + response.toString());
                         }
 
                         else if(response.trim().equals("-1"))
                         {
-                            Toast.makeText(RegisterAccount.this,"Server is busy, try again!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterAccount.this,"Hệ thống đang bận, vui lòng thử lại!!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -100,7 +100,7 @@ public class RegisterAccount extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //if can't connect to database
-                        Toast.makeText(RegisterAccount.this,"Server is busy, try again!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterAccount.this,"Hệ thống đang bận, vui lòng thử lại!!!", Toast.LENGTH_SHORT).show();
                         //Log.d("AAA","Lỗi\n" + error.toString());
                     }
                 }
