@@ -195,14 +195,23 @@ public class Showdata extends AppCompatActivity {
                                 //JSONArray month = collectedobject.getJSONArray("years"); // chua co array nen k xai duoc
                                             //Log.d("month", String.valueOf(month));
 
-                                String[] currentTittle = {"Tài khoản","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
+                                String[] currentTittle = //{"Tài khoản",
+                                        {
+                                            "Mã số mạng lưới","Trạng thái kết nối","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
                                         "Điện áp AC (Volt)","Tần số điện ấp AC (Hz)",
                                         "Nhiệt độ (độ C)","Năng lượng tiêu thụ (W)","Năng lượng thu được trong ngày (kW)",
-                                        "Năng lượng thu được toàn bộ (kW)","Trạng thái kết nối","Mã số mạng lưới"};
+                                        "Năng lượng thu được toàn bộ (kW)"};
 
+                                String statusConnect = "OFF-LINE";
+                                if(currentobject.getString("NodeID").equals("1"))
+                                {
+                                    statusConnect = "ON-LINE";
+                                }
 
                                 String[] infoArray = {
-                                        currentobject.getString("ID"),
+                                        //currentobject.getString("ID"),
+                                        currentobject.getString("NodeID"),
+                                        statusConnect,
                                         currentobject.getString("TimeGet"),
                                         currentobject.getString("PV_Vol"),
                                         currentobject.getString("PV_Amp"),
@@ -212,9 +221,8 @@ public class Showdata extends AppCompatActivity {
                                         currentobject.getString("Tem"),
                                         currentobject.getString("Pac"),
                                         currentobject.getString("EToday"),
-                                        currentobject.getString("EAll"),
-                                        currentobject.getString("StatusConnect"),
-                                        currentobject.getString("NodeID")
+                                        currentobject.getString("EAll")
+
                                 };
 
                                 XiuListAdapter currentShow = new XiuListAdapter(Showdata.this, currentTittle, infoArray);
@@ -261,7 +269,7 @@ public class Showdata extends AppCompatActivity {
 
                     Global g = (Global) getApplication();
                     String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
-                    Log.d("Showdata_usercheck",user);
+                    //Log.d("Showdata_usercheck",user);
                     //String user = "{\"NodeID\":\"CEEC_0\"}";
                     String day = "{\"day\":14, \"month\": 3, \"year\": 2019}";
                     String month = "{\"month\": 3, \"year\": 2019}";
