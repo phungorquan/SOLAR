@@ -80,6 +80,8 @@ public class NearShowData extends AppCompatActivity {
                         try {
                             JSONObject datafromESP = new JSONObject(response);
 
+                            Log.d("JSONOFNEAR",response);
+
                             String[] currentTittle =
                                     {
                                             "Trạng thái kết nối","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
@@ -88,7 +90,7 @@ public class NearShowData extends AppCompatActivity {
                                             "Năng lượng thu được toàn bộ (kW)"};
 
                             String statusConnect = "OFF-LINE";
-                            if(datafromESP.getString("NodeID").equals("1"))
+                            if(datafromESP.getString("StatusConnect").equals("1"))
                             {
                                 statusConnect = "ON-LINE";
                             }

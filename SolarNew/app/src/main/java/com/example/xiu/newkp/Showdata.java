@@ -67,10 +67,8 @@ public class Showdata extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //String Y = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-                //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
-                //String M = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
-                //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
+
+
                 if(g.CheckWIFI(Showdata.this) == true) {
                     Intent intent = new Intent(Showdata.this, Calendar.class);
                     startActivity(intent);
@@ -78,7 +76,12 @@ public class Showdata extends AppCompatActivity {
             }
         });
 
-        Getdata(urlgetdata);
+        final String[] YearYear = {new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date())};
+        //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
+        final String[] MonthMonth = {new SimpleDateFormat("mm", Locale.getDefault()).format(new Date())};
+        //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
+        final String[] DayDay = {new SimpleDateFormat("dd", Locale.getDefault()).format(new Date())};
+        Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
 
         Thread t = new Thread() {
             @Override
@@ -89,7 +92,12 @@ public class Showdata extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Getdata(urlgetdata);
+                                YearYear[0] = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
+                                //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
+                                MonthMonth[0] = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
+                                //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
+                                DayDay[0] = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+                                Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
                             }
                         });
                     }
@@ -179,7 +187,7 @@ public class Showdata extends AppCompatActivity {
 //        };
 //        requestQueue.add(jsonObjReq);
 
-         void Getdata ( final String url){
+         void Getdata ( final String url , final String dayday , final String monthmonth , final String yearyear){
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
@@ -203,7 +211,7 @@ public class Showdata extends AppCompatActivity {
                                         "Năng lượng thu được toàn bộ (kW)"};
 
                                 String statusConnect = "OFF-LINE";
-                                if(currentobject.getString("NodeID").equals("1"))
+                                if(currentobject.getString("StatusConnect").equals("1"))
                                 {
                                     statusConnect = "ON-LINE";
                                 }
@@ -271,14 +279,20 @@ public class Showdata extends AppCompatActivity {
                     String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
                     //Log.d("Showdata_usercheck",user);
                     //String user = "{\"NodeID\":\"CEEC_0\"}";
-                    String day = "{\"day\":14, \"month\": 3, \"year\": 2019}";
-                    String month = "{\"month\": 3, \"year\": 2019}";
-                    String year = "2019";
+                    //String day = "{\"day\":24, \"month\": 4, \"year\": 2019}";
+                    //String month = "{\"month\": 3, \"year\": 2019}";
+                    //String year = "2019";
+
+                    String today_send = "{\"day\":" + dayday + ", \"month\":" + monthmonth + ", \"year\":" + yearyear + "}";
+                    String days_send = "disable";
+                    String months_send = "disable";
+
+
 
                     send.put("user", user);
-                    send.put("day", day);
-                    send.put("month", month);
-                    send.put("year", year);
+                    send.put("day", today_send);
+                    send.put("month", days_send);
+                    send.put("year", months_send);
 
                     return send;
                 }
