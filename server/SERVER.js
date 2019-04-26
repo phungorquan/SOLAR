@@ -370,8 +370,10 @@ io.on("connection", function(socket) {
             };
             if(newData.CurrentOrCollected===0) {
               io.sockets.in(newData.NodeID).emit("server-send-current-data", newData);
-              db.updateCurrentData(newData.ID, newData.NodeID, newData);
-            } else if(newData.CurrentOrCollected===1) {
+              if(newData.StatusConnect===1) {
+              	db.updateCurrentData(newData.ID, newData.NodeID, newData);
+          	  }
+            } else if(newData.CurrentOrCollected===1 && newData.StatusConnect===1) {
               insert_send();
               async function insert_send() {
                 try {

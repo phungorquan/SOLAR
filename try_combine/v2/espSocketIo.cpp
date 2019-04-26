@@ -1,10 +1,52 @@
 #include "espSocketIo.h"
-#include "globalVar.h"
+#include "inverter.h"
 #include <ESP8266WiFi.h>
 #include <SocketIoClient.h>
 #include <ArduinoJson.h>
 #include <Crypto.h>
 #include <base64.hpp>
+
+//=====================================================================
+//                              user define
+//=====================================================================
+bool joinedRoom = false;
+
+
+//=====================================================================
+//                              encryption
+//=====================================================================
+#define BLOCK_SIZE 16
+
+static uint8_t key[BLOCK_SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+static uint8_t iv[BLOCK_SIZE] = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,35, 36 };
+
+static char Pass[]="ce.uit.edu.vn";
+
+//=====================================================================
+//                              wifi and socket
+//=====================================================================
+const char* ssid = "TP-LINK_49C732";
+const char* password = "41748435";
+     
+const char* Host_Socket = "ceecsolarsystem.herokuapp.com";
+unsigned int Port_Socket = 80;
+
+static char sendSocketString[400] = {};
+
+//const char* Host_Socket = "192.168.0.108";
+//unsigned int Port_Socket = 3484;
+
+//=====================================================================
+//                              time
+//=====================================================================
+
+static unsigned long previousMillisSendAut = 0;
+#define intervalSendAut 4000
+
+static unsigned long previousMillisSendCurrent = 0;
+static unsigned long previousMillisSendCollected = 0;
+#define intervalSendCurrent 10000
+#define intervalSendCollected 1233000
 
 SocketIoClient webSocket;
 
@@ -26,9 +68,10 @@ void socketInit() {
 	randomSeed(analogRead(A0));
 
 	WiFi.begin(ssid, password);
+  Serial.println("connect wifi");
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);
-    Serial.println('.');
+    Serial.print('.');
 	}
 
 	webSocket.on("esp-join-success", join_success);
@@ -37,7 +80,6 @@ void socketInit() {
 	previousMillisSendCurrent=millis();
 	previousMillisSendCollected=millis();
 	previousMillisSendAut=millis();
-	previousMillisTimeOutReset=millis();
 }
 
 DynamicJsonBuffer jsonBuffer;
@@ -120,7 +162,7 @@ void parseInputInverter (float pv_v,float pv_a,float bus,float ac_v,float ac_hz,
 void espSocketIoLoop() {
   if ((millis() - previousMillisSendCurrent > intervalSendCurrent) && joinedRoom) {
       convertPassToArray(Pass);
-      parseInputInverter(random(256),random(256),random(256),random(256),random(256),random(256),random(256),random(256),random(256),1);
+      parseInputInverter(dataRes[0],dataRes[1],dataRes[2],dataRes[3],dataRes[4],dataRes[5],dataRes[6],dataRes[7],dataRes[8],dataRes[9]);
       root["dataInvert"][10]=0; //0 -> send current data
       String output="";
       root.printTo(output);
@@ -131,10 +173,17 @@ void espSocketIoLoop() {
       sendSocketString[i]='\0';
       webSocket.emit("esp_send_data", sendSocketString);
       previousMillisSendCurrent = millis();
+      if(dataRes[9]==1) {
+        for (int i=0; i<8; i++) {
+          dataRes_low[i] = 99999;
+          dataRes_high[i] = 0;
+        }
+        dataRes[9]=0;
+      }
   }
   if ((millis() - previousMillisSendCollected > intervalSendCollected) && joinedRoom) {
       convertPassToArray(Pass);
-      parseInputInverter(random(256),random(256),random(256),random(256),random(256),random(256),random(256),random(256),random(256),1);
+      parseInputInverter(dataRes[0],dataRes[1],dataRes[2],dataRes[3],dataRes[4],dataRes[5],dataRes[6],dataRes[7],dataRes[8],dataRes[9]);
       root["dataInvert"][10]=1; //1 -> send collected data
       String output="";
       root.printTo(output);
@@ -145,6 +194,13 @@ void espSocketIoLoop() {
       sendSocketString[i]='\0';
       webSocket.emit("esp_send_data", sendSocketString);
       previousMillisSendCollected = millis();
+      if(dataRes[9]==1) {
+        for (int i=0; i<8; i++) {
+          dataRes_low[i] = 99999;
+          dataRes_high[i] = 0;
+        }
+        dataRes[9]=0;
+      }
   }
   //Kết nối lại!
   if ((millis() - previousMillisSendAut > intervalSendAut) && !joinedRoom) {
@@ -163,6 +219,6 @@ void espSocketIoLoop() {
   webSocket.loop();
 
   if(!webSocket.StatusConnectSocket) {
-    resetFunc();
+    ESP.restart();
   }
 }

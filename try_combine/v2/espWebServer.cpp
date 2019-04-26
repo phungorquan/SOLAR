@@ -1,6 +1,11 @@
 #include "espWebServer.h"
 
-float dataRes[9] = {};
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <ArduinoJson.h>
+#include <WiFiClient.h>
+#include "index.h"
+#include "inverter.h"
 
 ESP8266WebServer espWebServer(80); //Server on port 80
 
@@ -22,7 +27,7 @@ void handleCurrent() {
 	DynamicJsonBuffer jsonBuffer;
 	String input = "{\"PV_Vol\": 0, \"PV_Amp\": 0, \"Bus\": 0, \"AC_Vol\": 0, \"AC_Hz\": 0, \"Tem\": 0, \"Pac\": 0, \"EToday\": 0, \"EAll\": 0, \"StatusConnect\": 1}";
 	JsonObject& root = jsonBuffer.parseObject(input);
-	root["PV_Vol"]=dataRes[0]++;
+	root["PV_Vol"]=dataRes[0];
 	root["PV_Amp"]=dataRes[1];
 	root["Bus"]=dataRes[2];
 	root["AC_Vol"]=dataRes[3];
@@ -31,10 +36,17 @@ void handleCurrent() {
 	root["Pac"]=dataRes[6];
 	root["EToday"]=dataRes[7];
 	root["EAll"]=dataRes[8];
-
+  root["StatusConnect"]=dataRes[9];
 	String output;
  	root.printTo(output);
  	espWebServer.send(200, "text/plane", output);
+  if(dataRes[9]==1) { //neu esp da ket noi duoc voi inverter
+        for (int i=0; i<8; i++) {
+          dataRes_low[i] = 99999;
+          dataRes_high[i] = 0;
+        }
+        dataRes[9]=0;
+      }
 }
 
 void espWebServerInit() {

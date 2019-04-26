@@ -1,6 +1,8 @@
 #ifndef ESP_SOCKET_IO_H
 #define ESP_SOCKET_IO_H
+
 #include <ESP8266WiFi.h>
+
 void bufferSize(char* text, int &length);
 bool convertPassToArray (char Pass[]);
 void socketInit();
