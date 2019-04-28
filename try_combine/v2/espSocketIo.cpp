@@ -65,8 +65,6 @@ void join_success(const char * payload, size_t length) {
 }
 
 void socketInit() {
-	randomSeed(analogRead(A0));
-
 	WiFi.begin(ssid, password);
   Serial.println("connect wifi");
 	while (WiFi.status() != WL_CONNECTED) {
@@ -215,10 +213,13 @@ void espSocketIoLoop() {
     webSocket.emit("authentication", sendSocketString);
     previousMillisSendAut=millis();
   }
-  
-  webSocket.loop();
-
   if(!webSocket.StatusConnectSocket) {
-    ESP.restart();
+    webSocket.disconnect();
+    delay(500);
+    joinedRoom=false;
+    webSocket.begin(Host_Socket, Port_Socket, "/socket.io/?transport=websocket");
+    webSocket.StatusConnectSocket=true;
+    delay(500);
   }
+  webSocket.loop();
 }
