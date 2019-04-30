@@ -1,17 +1,11 @@
 package com.example.xiu.newkp;
 
-import android.app.Application;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -19,12 +13,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,58 +22,40 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class Showdata extends AppCompatActivity {
-    String urlgetdata = //"http://lee-ceec.000webhostapp.com/solar/Android/Getdata.php";
-            //"http://192.168.1.11:1234/SOLAR/TryreceiveJSON.php";//"http://192.168.1.7:1234/SOLAR/Getdata.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
-//            "http://256208cd.ngrok.io/androidReqData";
-            "http://ceecsolarsystem.herokuapp.com/androidReqData";
+    String urlgetdata = "http://ceecsolarsystem.herokuapp.com/androidReqData"; // Địa chỉ để lấy dữ liệu
     Button btn;
     ListView DataView;
-    ArrayList<String> DataArr;
 
 
-    //String abc="Toilaai";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_showdata);
-        getSupportActionBar().setTitle("Data");
+        getSupportActionBar().setTitle("Data");// Hàm hỗ trợ hiển thị tên ở góc trái màn hình và nút Back ( Nút back cần được set sẽ Back về đâu trong file Manifest)
 
 
         final Global g = (Global) getApplication();
 
-        //Log.d("Getout Showdata",g.getNode_ID());
+       // các thủ tục ánh xạ bên Layout
 
         btn = (Button) findViewById(R.id.btnhis);
         DataView = (ListView) findViewById(R.id.lstview);
 
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if(g.CheckWIFI(Showdata.this) == true) {
-                    Intent intent = new Intent(Showdata.this, Calendar.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
+        // Get các ngày tháng năm hiện tại
         final String[] YearYear = {new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date())};
-        //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
         final String[] MonthMonth = {new SimpleDateFormat("mm", Locale.getDefault()).format(new Date())};
-        //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
         final String[] DayDay = {new SimpleDateFormat("dd", Locale.getDefault()).format(new Date())};
+
+        //Sau đó gọi hàm này để hiển thị các data
         Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
 
-        Thread t = new Thread() {
+        // Sau đó sẽ gọi hàm này mỗi 9s với các thông tin ngày tháng năm đã được khởi tạo ở trên
+        final Thread t = new Thread() {
             @Override
             public void run() {
                 try {
@@ -93,10 +65,9 @@ public class Showdata extends AppCompatActivity {
                             @Override
                             public void run() {
                                 YearYear[0] = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-                                //Toast.makeText(Showdata.this, Y, Toast.LENGTH_LONG).show();
                                 MonthMonth[0] = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
-                                //Toast.makeText(Showdata.this, M, Toast.LENGTH_LONG).show();
                                 DayDay[0] = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+                                // Sau đó sẽ gọi hàm này mỗi 9s với các thông tin ngày tháng năm đã được khởi tạo ở trên
                                 Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
                             }
                         });
@@ -105,87 +76,24 @@ public class Showdata extends AppCompatActivity {
                 }
             }
         };
-        t.start();
+
+        t.start(); // bắt đầu lặp
 
 
+        // Nếu nhấn vào xem lịch sử thì sẽ chuyển đến Calendar Activity
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
-       // Getdata(urlgetdata);
-
-        // final Bundle bd = getIntent().getExtras();
-        // final String[] Getaccount = {null};
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Showdata.this,Calendar.class);
-//               // if(bd != null)
-//              //  {
-//              //      Getaccount[0] = bd.getString("Getaccount");
-//              //  }
-//             //   intent.putExtra("Getaccount",Getaccount[0]);
-//                startActivity(intent);
-//            }
-//        });
-//
-//
-//                final Handler handler = new Handler();
-//                 handler.postDelayed( new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//              //  if(bd != null)
-//              //  {
-//              //      Getaccount[0] = bd.getString("Getaccount");
-//              //  }
-//                Getdata(urlgetdata, g.getData());
-//                handler.postDelayed( this,  2000 );
-//            }
-//        },  2000 );
-
-
+                if(g.CheckWIFI(Showdata.this) == true) {
+                    t.interrupt();
+                    Intent intent = new Intent(Showdata.this, Calendar.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
-
-//     void GETGET(String url, JSONObject js) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-//                Request.Method.POST, url, js,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            String abc = response.getString("mess");
-//                            Toast.makeText(Showdata.this, abc, Toast.LENGTH_LONG).show();
-//                            Log.d("RES", response.toString());
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(Showdata.this, "ERROR", Toast.LENGTH_SHORT).show();
-//                        Log.d("ERR", "ERR" + error.toString());
-//                    }
-//                }) {
-//
-//
-//            @Override
-//            public String getBodyContentType() {
-//                return "application/x-www-form-urlencoded; charset=UTF-8";
-//            }
-//
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Content-Type", "application/x-www-form-urlencoded");
-//                return headers;
-//            }
-//        };
-//        requestQueue.add(jsonObjReq);
 
          void Getdata ( final String url , final String dayday , final String monthmonth , final String yearyear){
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -195,17 +103,11 @@ public class Showdata extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject parentObject = new JSONObject(response);
-                               // JSONObject collectedobject = parentObject.getJSONObject("collected");
-
                                 JSONObject currentobject = parentObject.getJSONObject("current");
-                               // Log.d("collect", String.valueOf(collected));
 
-                                //JSONArray month = collectedobject.getJSONArray("years"); // chua co array nen k xai duoc
-                                            //Log.d("month", String.valueOf(month));
-
-                                String[] currentTittle = //{"Tài khoản",
+                                String[] currentTittle =
                                         {
-                                            "Mã số mạng lưới","Trạng thái kết nối","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
+                                                "Mã số mạng lưới","Trạng thái kết nối","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
                                         "Điện áp AC (Volt)","Tần số điện ấp AC (Hz)",
                                         "Nhiệt độ (độ C)","Năng lượng tiêu thụ (W)","Năng lượng thu được trong ngày (kW)",
                                         "Năng lượng thu được toàn bộ (kW)"};
@@ -217,7 +119,6 @@ public class Showdata extends AppCompatActivity {
                                 }
 
                                 String[] infoArray = {
-                                        //currentobject.getString("ID"),
                                         currentobject.getString("NodeID"),
                                         statusConnect,
                                         currentobject.getString("TimeGet"),
@@ -235,21 +136,6 @@ public class Showdata extends AppCompatActivity {
 
                                 XiuListAdapter currentShow = new XiuListAdapter(Showdata.this, currentTittle, infoArray);
                                 DataView.setAdapter(currentShow);
-
-
-
-                                //DataArr = new ArrayList<String>();
-
-
-//                                for(int i=0;i<month.length();i++)
-//                                 {
-//                                    JSONObject monthdata = month.getJSONObject(i);
-//                                    //DataArr.add(monthdata.getString("Pac"));
-//                                    //DataArr.add(monthdata.getString("TimeGet"));
-//
-//                                     Toast.makeText(Showdata.this, monthdata.getString("Pac"), Toast.LENGTH_LONG).show();
-//                                     Toast.makeText(Showdata.this, monthdata.getString("TimeGet"), Toast.LENGTH_LONG).show();
-//                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -270,24 +156,16 @@ public class Showdata extends AppCompatActivity {
                 public String getBodyContentType() {
                     return "application/x-www-form-urlencoded; charset=UTF-8";
                 }
-
+                // Lấy thông tin ngày hôm nay để chuẩn bị gửi đi , những String để disable giúp cho việc k cần lấy quá nhiều data thừa về
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> send = new HashMap<>();
 
                     Global g = (Global) getApplication();
                     String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
-                    //Log.d("Showdata_usercheck",user);
-                    //String user = "{\"NodeID\":\"CEEC_0\"}";
-                    //String day = "{\"day\":24, \"month\": 4, \"year\": 2019}";
-                    //String month = "{\"month\": 3, \"year\": 2019}";
-                    //String year = "2019";
-
                     String today_send = "{\"day\":" + dayday + ", \"month\":" + monthmonth + ", \"year\":" + yearyear + "}";
                     String days_send = "disable";
                     String months_send = "disable";
-
-
 
                     send.put("user", user);
                     send.put("day", today_send);
@@ -298,7 +176,7 @@ public class Showdata extends AppCompatActivity {
                 }
             };
 
-            requestQueue.add(stringRequest);
+            requestQueue.add(stringRequest);    // Gửi request
         }
 
 

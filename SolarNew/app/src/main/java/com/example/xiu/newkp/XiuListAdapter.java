@@ -9,6 +9,9 @@ package com.example.xiu.newkp;
 
 public class XiuListAdapter extends ArrayAdapter {
 
+    // Tao một Layout riêng cho mình với Tittle và data trong ListView
+
+
     public XiuListAdapter(Activity context, String[] nameArrayParam, String[] infoArrayParam){
 
         super(context,R.layout.listview_row , nameArrayParam);

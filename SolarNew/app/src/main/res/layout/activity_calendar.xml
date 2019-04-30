@@ -10,18 +10,16 @@
     <CalendarView
         android:id="@+id/cld"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="250dp"
         app:layout_constraintBottom_toTopOf="@+id/txvEToday"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/rDG"
-        android:layout_width="0dp"
+        android:layout_width="132dp"
         android:layout_height="0dp"
         android:layout_marginStart="2dp"
         android:layout_marginLeft="2dp"
@@ -73,7 +71,7 @@
     <ListView
         android:id="@+id/lstviewwithDate"
         android:layout_width="0dp"
-        android:layout_height="168dp"
+        android:layout_height="223dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,15 +80,16 @@
 
     <TextView
         android:id="@+id/txvEToday"
-        android:layout_width="223dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="175dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="229dp"
         android:gravity="center"
         android:text="AVG - EToday"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rDG"
         app:layout_constraintTop_toBottomOf="@+id/cld" />
 
 </android.support.constraint.ConstraintLayout>

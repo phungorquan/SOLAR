@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Node;
 
 public class CreateNode extends AppCompatActivity {
 
@@ -21,8 +19,9 @@ public class CreateNode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_node);
 
-        getSupportActionBar().setTitle("Create Node");
+        getSupportActionBar().setTitle("Create Node");// Hàm hỗ trợ hiển thị tên ở góc trái màn hình và nút Back ( Nút back cần được set sẽ Back về đâu trong file Manifest)
 
+        // Các thủ tực ánh xạ bên Layout
         edtNameNode = (EditText) findViewById(R.id.edtNameNode);
         edtAddr = (EditText) findViewById(R.id.edtLocation);
         edtInfo = (EditText) findViewById(R.id.edtInfo);
@@ -30,6 +29,10 @@ public class CreateNode extends AppCompatActivity {
         creNl = (TextView) findViewById(R.id.txvCreNL);
 
         creNl.setText("Tạo");
+
+        // Hàm này chưa có gì cả ,chưa có chức năng này
+
+
         creNl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,8 +56,6 @@ public class CreateNode extends AppCompatActivity {
 
             }
         });
-
-
 
     }
 }

@@ -1,13 +1,8 @@
 package com.example.xiu.newkp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +22,7 @@ import java.util.Map;
 public class RegisterAccount extends AppCompatActivity {
     TextView tvReg;
     EditText edtID,edtPASS,edtPASSCON;
-    String urlpostdata = "http:192.168.0.113:3000";//"http://lee-ceec.000webhostapp.com/solar/Android/Reg.php";//"http://192.168.1.3:1234/SOLAR/Reg.php";//"http://192.168.1.7:1234/SOLAR/Reg.php";
+    String urlpostdata = "http:192.168.0.113:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

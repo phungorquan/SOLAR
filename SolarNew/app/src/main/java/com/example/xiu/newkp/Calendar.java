@@ -39,8 +39,9 @@ public class Calendar extends AppCompatActivity {
     RadioButton rd1,rd2,rd3,rd4;
     TextView txv;
     int CheckBoxSelect = 1;
-    final String urlgetdata =  "http://ceecsolarsystem.herokuapp.com/androidReqData";//"http://192.168.1.3:1234/SOLAR/Calendar.php"; //"http://ceecdoor.000webhostapp.com/NEWAND/OuputaJson.php";
+    final String urlgetdata =  "http://ceecsolarsystem.herokuapp.com/androidReqData";// Địa chỉ lấy data
 
+    // Lấy các thông tin ngày tháng năm hiện tại để lưu vào cục bộ
     String Glob_Day = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
     String Glob_Month = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
     String Glob_Year = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
@@ -53,7 +54,7 @@ public class Calendar extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
         getSupportActionBar().setTitle("History");
 
-
+        //Các thủ tục ánh xạ bên Layout
         calendar = (CalendarView) findViewById(R.id.cld);
         DataView = (ListView) findViewById(R.id.lstviewwithDate);
 
@@ -66,15 +67,23 @@ public class Calendar extends AppCompatActivity {
         txv = (TextView) findViewById(R.id.txvEToday);
         txv.setText("Giá trị điện trung bình");
 
+
+        // Gọi hàm này dể hiển thị data ngày hôm nay trước
         GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
 
 
+        // Các vòng tròn tick chọn
+        // ToDay : Ngày hôm nay
+        // Days: Các ngày trong tháng
+        // Months : Các tháng trong năm
+        // Years : Các năm
 
         radioGroupTime.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId)
                 {
+                    // Ứng với tick nào sẽ vào đó và chạy hàm tương ứng
                     case R.id.rDMY:
                         CheckBoxSelect = 1;
                         GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
@@ -96,51 +105,19 @@ public class Calendar extends AppCompatActivity {
                         break;
                 }
 
-
-//                Thread t = new Thread() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            while (!isInterrupted()) {
-//                                Thread.sleep(9000);
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        GetdatawithDate(urlgetdata,Integer.valueOf(Glob_Year),Integer.valueOf(Glob_Month),Integer.valueOf(Glob_Day));
-//                                    }
-//                                });
-//                            }
-//                        } catch (InterruptedException e) {
-//                        }
-//                    }
-//                };
-//                t.start();
-
             }
         });
 
 
-       // final Bundle bd = getIntent().getExtras();
-       /// final String[] Getaccount = {null};
-
+        // Khi có sự thay đổi ở Calendar sẽ gọi hàm này
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                //String data = (dayOfMonth)+ "/" + (month) + "/" + (year);
-                //String date = (year)+"-"+(month + 1)+"-"+(dayOfMonth);
-
-                // if(bd != null)
-                // {
-                //      Getaccount[0] = bd.getString("Getaccount");
-                //  }
-
                 Glob_Day = String.valueOf(dayOfMonth);
-                Glob_Month = String.valueOf(month+1);
+                Glob_Month = String.valueOf(month+1);   // Chú ý phải + 1 ở Months
                 Glob_Year = String.valueOf(year);
 
-
-
-                GetdatawithDate(urlgetdata,year,month + 1,dayOfMonth);
+                GetdatawithDate(urlgetdata,year,month + 1,dayOfMonth);// Chú ý phải + 1 ở Months
 
             }
         });
@@ -159,8 +136,6 @@ public class Calendar extends AppCompatActivity {
                         try {
                             JSONObject parentObject = new JSONObject(response);
                              JSONObject collectedobject = parentObject.getJSONObject("collected");
-                             //Log.d("collect", String.valueOf(collectedobject));
-
                             if(CheckBoxSelect == 1)
                             {
                                 String[] Nulltittle = {"Không có dữ liệu"};
@@ -283,12 +258,13 @@ public class Calendar extends AppCompatActivity {
 
                 Global g = (Global) getApplication();
 
-                String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
-                //String user = "{\"NodeID\":\"CEEC_0\"}";
+                String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";   // Lấy thông tin tên NodeID đã lưu lúc chọn Node ban đầu
                 String today_send = null;
                 String days_send = null;
                 String months_send = null;
                 String years_send = null;
+
+                // ứng với tick nào thì nhảy vào đó , disable để tránh lấy dữ liẹu thừa về
 
                 if(CheckBoxSelect == 1)
                 {
@@ -325,6 +301,8 @@ public class Calendar extends AppCompatActivity {
                 }
                 //String year = "2019";
 
+
+                // Chuẩn bị datagửi đi
                 send.put("user", user);
                 send.put("day", today_send);
                 send.put("month", days_send);
@@ -335,72 +313,8 @@ public class Calendar extends AppCompatActivity {
             }
         };
 
-        requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest); // Gửi request
     }
-
-
-
-//    public void PostDate (final String url, final String date, final String Getaccount)
-//    {
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//
-//                        try {
-//                            JSONArray jsonArray = new JSONArray(response);
-//                                try{
-//                                    JSONObject object = jsonArray.getJSONObject(0);
-//                                    final String f1 = object.getString("F1");
-//                                    final String f2 = object.getString("F2");
-//                                    final String f3 = object.getString("F3");
-//
-//                                    if(f1 == "null" && f2 == "null" && f3 == "null")
-//                                    {
-//
-//                                        txv1.setText("Nodata");
-//                                        txv2.setText("Nodata");
-//                                        txv3.setText("Nodata");
-//                                    }
-//                                    else if(f1 != "null" && f2 != "null" && f3 != "null")
-//                                    {
-//                                        txv1.setText(f1);
-//                                        txv2.setText(f2);
-//                                        txv3.setText(f3);
-//                                    }
-//                                }
-//                                catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        //if can't connect to database
-//                        Toast.makeText(Calendar.this,"Server is busy, try again!!!", Toast.LENGTH_SHORT).show();
-//                        //Log.d("AAA","Lỗi\n" + error.toString());
-//                    }
-//                }
-//
-//
-//        ){
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String,String> params = new HashMap<>();
-//                params.put("DATE",date.trim());
-//                params.put("ID",Getaccount.trim());
-//                return params;
-//            }
-//        };
-//        requestQueue.add(stringRequest);
-//    }
 
 
 }

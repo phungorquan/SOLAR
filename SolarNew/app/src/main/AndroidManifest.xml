@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ModeSelect"
-            android:label="Selection Data Access">
+            android:label="CE-SOLAR">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

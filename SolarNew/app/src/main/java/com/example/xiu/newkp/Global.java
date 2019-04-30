@@ -13,6 +13,7 @@ public class Global extends Application {
     private String Node_ID;
     private String JSonRes;
 
+
     public String getData(){
         return this.data;
     }
@@ -26,6 +27,8 @@ public class Global extends Application {
 
     public String getResponseJsonNodeList() {return this.JSonRes;}
     public void setResponseJsonNodeList(String jsonres) {this.JSonRes = jsonres;}
+
+
 
 
 

@@ -1,32 +1,26 @@
 package com.example.xiu.newkp;
 
-import android.content.Intent;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class NearShowData extends AppCompatActivity {
 
     TextView txvNDT;
-    String urlpostdata =  "http://192.168.4.22/current";
-
+    String urlpostdata =  "http://192.168.4.22/current";    // Đây là địa chỉ static của nodemcu để kết nối lấy dữ liệu gần
     ListView DataView;
 
     @Override
@@ -34,17 +28,20 @@ public class NearShowData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_near_show_data);
 
+        // Các thủ tực ánh xạ bên layout
         txvNDT = (TextView) findViewById(R.id.txvNearDataTittle);
         DataView = (ListView) findViewById(R.id.lsvNear);
 
 
-        getSupportActionBar().setTitle("Data");
-        txvNDT.setText("Lượng điện thu được hiện tại");
-        Global g = (Global) getApplication();
+        getSupportActionBar().setTitle("Data"); // Hàm hỗ trợ hiển thị tên ở góc trái màn hình và nút Back ( Nút back cần được set sẽ Back về đâu trong file Manifest)
+        txvNDT.setText("Lượng điện thu được hiện tại");// Hiển thị Tittle
+
+        Global g = (Global) getApplication();   // Khởi tạo Object g để gọi hàm check wifi
 
         if(g.CheckWIFI(NearShowData.this) == true)
         {
 
+            // Thread sẽ run again sau 9s
             Thread t = new Thread() {
                 @Override
                 public void run() {
@@ -54,7 +51,7 @@ public class NearShowData extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Login(urlpostdata);
+                                    ShowNearData(urlpostdata); // Nếu check wifi thành cônng thì sẽ gọi hàm này
                                 }
                             });
                         }
@@ -64,24 +61,20 @@ public class NearShowData extends AppCompatActivity {
             };
             t.start();
         }
+
     }
 
 
 
-    public void Login (String url)
+    public void ShowNearData (String url)
     {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-                       //Log.d("GETFROM NEAR",response);
                         try {
                             JSONObject datafromESP = new JSONObject(response);
-
-                            Log.d("JSONOFNEAR",response);
-
                             String[] currentTittle =
                                     {
                                             "Trạng thái kết nối","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
@@ -120,9 +113,7 @@ public class NearShowData extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //if can't connect to database
                         Toast.makeText(NearShowData.this,"Hệ thống đang bận, vui lòng thử lại!!!", Toast.LENGTH_SHORT).show();
-                        //Log.d("AAA","Lỗi\n" + error.toString());
                     }
                 }
 
@@ -140,9 +131,6 @@ public class NearShowData extends AppCompatActivity {
 //                return params;
 //            }
         };
-        requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest); // Gửi request
     }
-
-
-
 }
