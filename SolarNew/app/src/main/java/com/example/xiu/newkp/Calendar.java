@@ -42,8 +42,8 @@ public class Calendar extends AppCompatActivity {
     final String urlgetdata =  "http://ceecsolarsystem.herokuapp.com/androidReqData";// Địa chỉ lấy data
 
     // Lấy các thông tin ngày tháng năm hiện tại để lưu vào cục bộ
-    String Glob_Day = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-    String Glob_Month = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+    String Glob_Day = new SimpleDateFormat("d", Locale.getDefault()).format(new Date());
+    String Glob_Month = new SimpleDateFormat("M", Locale.getDefault()).format(new Date());
     String Glob_Year = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
 
 

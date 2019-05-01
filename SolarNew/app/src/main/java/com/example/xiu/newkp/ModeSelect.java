@@ -26,13 +26,14 @@ public class ModeSelect extends AppCompatActivity {
 
         txvAb.setText("Về chúng tôi"); // Hiển thị thông tin ở cuối màn hình
 
-        final Global g = (Global)getApplication();      // Khởi tạo Object g để gọi hàm check wifi
+
 
         // Hiển thị hai hình để chọn Mode gần hoặc xa
         // Mỗi lần ấn vào hình thì checkwifi để chắc chắn người dùng đang connect wifi
         imgF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Global g = (Global)getApplication();// Khởi tạo Object g để gọi hàm check wifi
 
                 if(g.CheckWIFI(ModeSelect.this) == true)
                 {
@@ -46,6 +47,7 @@ public class ModeSelect extends AppCompatActivity {
         imgN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Global g = (Global)getApplication();// Khởi tạo Object g để gọi hàm check wifi
                 if(g.CheckWIFI(ModeSelect.this) == true)
                 {
                     // Nếu ấn chọn mode xa thì di chuyển đến xem dữ liệu ở khoảng cách gần (NearShowData Activity)

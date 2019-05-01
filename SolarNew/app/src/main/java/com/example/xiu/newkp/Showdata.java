@@ -19,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -30,26 +29,21 @@ public class Showdata extends AppCompatActivity {
     Button btn;
     ListView DataView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_showdata);
         getSupportActionBar().setTitle("Data");// Hàm hỗ trợ hiển thị tên ở góc trái màn hình và nút Back ( Nút back cần được set sẽ Back về đâu trong file Manifest)
-
-
-        final Global g = (Global) getApplication();
-
-       // các thủ tục ánh xạ bên Layout
-
+        // các thủ tục ánh xạ bên Layout
         btn = (Button) findViewById(R.id.btnhis);
         DataView = (ListView) findViewById(R.id.lstview);
 
 
+
         // Get các ngày tháng năm hiện tại
         final String[] YearYear = {new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date())};
-        final String[] MonthMonth = {new SimpleDateFormat("mm", Locale.getDefault()).format(new Date())};
-        final String[] DayDay = {new SimpleDateFormat("dd", Locale.getDefault()).format(new Date())};
+        final String[] MonthMonth = {new SimpleDateFormat("M", Locale.getDefault()).format(new Date())};
+        final String[] DayDay = {new SimpleDateFormat("d", Locale.getDefault()).format(new Date())};
 
         //Sau đó gọi hàm này để hiển thị các data
         Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
@@ -64,9 +58,6 @@ public class Showdata extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                YearYear[0] = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-                                MonthMonth[0] = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
-                                DayDay[0] = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
                                 // Sau đó sẽ gọi hàm này mỗi 9s với các thông tin ngày tháng năm đã được khởi tạo ở trên
                                 Getdata(urlgetdata, DayDay[0], MonthMonth[0], YearYear[0]);
                             }
@@ -77,14 +68,13 @@ public class Showdata extends AppCompatActivity {
             }
         };
 
-        t.start(); // bắt đầu lặp
-
+        t.start();
 
         // Nếu nhấn vào xem lịch sử thì sẽ chuyển đến Calendar Activity
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Global g = (Global) getApplication();
 
                 if(g.CheckWIFI(Showdata.this) == true) {
                     t.interrupt();
@@ -104,7 +94,6 @@ public class Showdata extends AppCompatActivity {
                             try {
                                 JSONObject parentObject = new JSONObject(response);
                                 JSONObject currentobject = parentObject.getJSONObject("current");
-
                                 String[] currentTittle =
                                         {
                                                 "Mã số mạng lưới","Trạng thái kết nối","Thời gian","Điện áp (Volt)","Dòng điện (Amp)","Bus (Volt)",
@@ -163,6 +152,7 @@ public class Showdata extends AppCompatActivity {
 
                     Global g = (Global) getApplication();
                     String user = "{\"NodeID\":" + "\"" + g.getNode_ID() + "\"}";
+                    //String user = "{\"NodeID\":\"CEEC_0\"}";
                     String today_send = "{\"day\":" + dayday + ", \"month\":" + monthmonth + ", \"year\":" + yearyear + "}";
                     String days_send = "disable";
                     String months_send = "disable";
