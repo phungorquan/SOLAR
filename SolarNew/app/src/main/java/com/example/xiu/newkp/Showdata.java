@@ -110,7 +110,7 @@ public class Showdata extends AppCompatActivity {
                                 String[] infoArray = {
                                         currentobject.getString("NodeID"),
                                         statusConnect,
-                                        currentobject.getString("TimeGet"),
+                                        currentobject.getString("TimeGet").substring(0,19),
                                         currentobject.getString("PV_Vol"),
                                         currentobject.getString("PV_Amp"),
                                         currentobject.getString("Bus"),

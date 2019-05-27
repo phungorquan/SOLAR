@@ -1,6 +1,5 @@
 package com.example.xiu.newkp;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -32,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Calendar extends AppCompatActivity {
+    float[] totalMoney = {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f}; // Phải tạo một mảng global để chưa dữ liệu tiền các tháng
 
     CalendarView calendar;
     RadioGroup radioGroupTime;
@@ -40,12 +39,11 @@ public class Calendar extends AppCompatActivity {
     TextView txv;
     int CheckBoxSelect = 1;
     final String urlgetdata =  "http://ceecsolarsystem.herokuapp.com/androidReqData";// Địa chỉ lấy data
-
+    final String urlgetMoney = "http://ceecsolarsystem.herokuapp.com/androidReqMoney";// Địa chỉ lấy Money data
     // Lấy các thông tin ngày tháng năm hiện tại để lưu vào cục bộ
     String Glob_Day = new SimpleDateFormat("d", Locale.getDefault()).format(new Date());
     String Glob_Month = new SimpleDateFormat("M", Locale.getDefault()).format(new Date());
     String Glob_Year = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-
 
 
     @Override
@@ -116,15 +114,11 @@ public class Calendar extends AppCompatActivity {
                 Glob_Day = String.valueOf(dayOfMonth);
                 Glob_Month = String.valueOf(month+1);   // Chú ý phải + 1 ở Months
                 Glob_Year = String.valueOf(year);
-
                 GetdatawithDate(urlgetdata,year,month + 1,dayOfMonth);// Chú ý phải + 1 ở Months
 
             }
         });
-
-
     }
-
 
     void GetdatawithDate (final String url, final int year, final int month, final int dayOfMonth){
 
@@ -145,9 +139,9 @@ public class Calendar extends AppCompatActivity {
 
                                 JSONObject EToday_Today = collectedobject.getJSONObject("day"); // chua co array nen k xai duoc
 
-                                String[] currentTittle =  {EToday_Today.getString("TimeGet")};
+                                String[] currentTittle =  {EToday_Today.getString("TimeGet").substring(0,19)};
                                 String[] infoArray = {
-                                        EToday_Today.getString("EToday"),
+                                        EToday_Today.getString("EToday")+" Kw",
                                 };
                                 XiuListAdapter currentShow = new XiuListAdapter(Calendar.this, currentTittle, infoArray);
                                 DataView.setAdapter(currentShow);
@@ -172,8 +166,8 @@ public class Calendar extends AppCompatActivity {
 
                                     JSONObject Object_Days = EToday_Days.getJSONObject(day_index);
 
-                                        currentTittle[day_index] = Object_Days.getString("TimeGet");
-                                        infoArray[day_index] = Object_Days.getString("EToday");
+                                        currentTittle[day_index] = Object_Days.getString("TimeGet").substring(0,19);
+                                        infoArray[day_index] = Object_Days.getString("EToday")+" Kw";
                                 }
 
                                 XiuListAdapter currentShow = new XiuListAdapter(Calendar.this, currentTittle, infoArray);
@@ -183,6 +177,7 @@ public class Calendar extends AppCompatActivity {
 
                             else if(CheckBoxSelect == 3)
                             {
+
                                 String[] Nulltittle = {"Không có dữ liệu"};
                                 String[] NullInfo = {"Không có dữ liệu"};
                                 XiuListAdapter ShownullFirst = new XiuListAdapter(Calendar.this, Nulltittle, NullInfo);
@@ -196,9 +191,16 @@ public class Calendar extends AppCompatActivity {
                                 for(int months_index = 0 ; months_index < EToday_Months.length(); months_index++) {
 
                                     JSONObject Object_Months = EToday_Months.getJSONObject(months_index);
-
-                                    currentTittle[months_index] = Object_Months.getString("TimeGet");
-                                    infoArray[months_index] = Object_Months.getString("EToday");
+                                    currentTittle[months_index] = Object_Months.getString("TimeGet").substring(0,19);
+                                    String GetMonthInJSON = Object_Months.getString("TimeGet").substring(5,7);  // Lấy tháng trong time trả về
+                                    GetMoney(urlgetMoney,year, Integer.parseInt(GetMonthInJSON),months_index);  // Truyền các thông số
+                                    // Không hiểu vì sao chương trình lại chạy hàm bên dưới trước khi chạy hàm GetMoney ở lần đầu tiên
+                                    // Do vậy tiền sẽ bị 0.0 lúc đầu , và nếu bỏ mảng tiền trên kia mà truyền thẳng tháng vào
+                                    // GetMoney để tạo một biến cục bộ thôi thì sẽ k được.
+                                    // Ví dụ thay vì tạo một mảng toàn cục tiền ở trên đầu thì chỉ cần tạo một biến cục bộ
+                                    // Sau đó khi nào vào GetMoney thì mới cập nhật biến đó, nhưng k được vì tự dưng
+                                    // Ở đây lại chạy hàm dưới hàm này trước xong rồi mới vào GetMoney nên -> Chỉ get được một giá trị tiền
+                                    infoArray[months_index] = Object_Months.getString("EToday")+" Kw" + "\n" +totalMoney[months_index] + " VND";
                                 }
 
 
@@ -223,8 +225,8 @@ public class Calendar extends AppCompatActivity {
 
                                     JSONObject Object_Years = EToday_Years.getJSONObject(years_index);
 
-                                    currentTittle[years_index] = Object_Years.getString("TimeGet");
-                                    infoArray[years_index] = Object_Years.getString("EToday");
+                                    currentTittle[years_index] = Object_Years.getString("TimeGet").substring(0,19);
+                                    infoArray[years_index] = Object_Years.getString("EToday")+" Kw";
                                 }
 
 
@@ -316,5 +318,74 @@ public class Calendar extends AppCompatActivity {
         requestQueue.add(stringRequest); // Gửi request
     }
 
+    //Hàm tính tiền
+    void GetMoney(final String url, final int year, final int month, final int index)
+    {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                float tmp = 0;
+                float data = Float.parseFloat(response);
 
+
+                if (data > 400) {
+                    tmp += (data - 400) * 2461;
+                    data = 400;
+                }
+                if (data > 300) {
+                    tmp += (data - 300) * 2834;
+                    data = 300;
+                }
+                if (data > 200) {
+                    tmp += (data - 200) * 2536;
+                    data = 200;
+                }
+                if (data > 100) {
+                    tmp += (data - 100) * 2014;
+                    data = 100;
+                }
+                if (data > 50) {
+                    tmp += (data - 50) * 1734;
+                    data = 50;
+                }
+                if (data > 0) {
+                    tmp += data * 1678;
+                }
+
+                totalMoney[index] = tmp; // Lưu vào phần tử cực bộ của mảng tiền đang thực thi trong điều kiện CheckBoxSelect
+
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Calendar.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> send = new HashMap<>();
+                Global gx = (Global) getApplication();
+
+                String NodeID = gx.getNode_ID();   // Lấy thông tin tên NodeID đã lưu lúc chọn Node ban đầu
+                String time = "{\"month\":" + month + ", \"year\":" + year + "}"; // Lấy thông tin tên NodeID đã lưu lúc chọn Node ban đầu
+
+                send.put("NodeID", NodeID);
+                send.put("time",time);
+                //send.put("year", "2019");
+
+
+                return send;
+            }
+        };
+
+        requestQueue.add(stringRequest); // Gửi request
+    }
 }

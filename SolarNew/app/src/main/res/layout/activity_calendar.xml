@@ -9,20 +9,16 @@
 
     <CalendarView
         android:id="@+id/cld"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="278dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/rDG"
-        android:layout_width="189dp"
+        android:layout_width="148dp"
         android:layout_height="205dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -74,7 +70,7 @@
 
     <ListView
         android:id="@+id/lstviewwithDate"
-        android:layout_width="189dp"
+        android:layout_width="228dp"
         android:layout_height="163dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -84,7 +80,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/rDG"
-        app:layout_constraintTop_toBottomOf="@+id/txvEToday" />
+        app:layout_constraintTop_toBottomOf="@+id/txvEToday"
+        app:layout_constraintVertical_bias="0.6" />
 
     <TextView
         android:id="@+id/txvEToday"

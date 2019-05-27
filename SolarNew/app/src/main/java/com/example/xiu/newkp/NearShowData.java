@@ -1,6 +1,7 @@
 package com.example.xiu.newkp;
 
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +23,7 @@ public class NearShowData extends AppCompatActivity {
     TextView txvNDT;
     String urlpostdata =  "http://192.168.4.22/current";    // Đây là địa chỉ static của nodemcu để kết nối lấy dữ liệu gần
     ListView DataView;
-
+    Thread t;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class NearShowData extends AppCompatActivity {
         {
 
             // Thread sẽ run again sau 9s
-            Thread t = new Thread() {
+            t = new Thread() {
                 @Override
                 public void run() {
                     try {
@@ -113,7 +114,11 @@ public class NearShowData extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(NearShowData.this,"Hệ thống đang bận, vui lòng thử lại!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NearShowData.this,"Hệ thống đang bận, kiểm tra lại Wifi !!!", Toast.LENGTH_SHORT).show();
+                        t.interrupt(); // Tránh tình trạng hiển thị lỗi liên tục khi người dùng truy cập khác local
+                        Intent intent = new Intent(NearShowData.this,ModeSelect.class);
+                        startActivity(intent);
+
                     }
                 }
 
